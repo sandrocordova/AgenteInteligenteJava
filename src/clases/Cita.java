@@ -7,7 +7,7 @@ package clases;
 
 /**
  *
- * @author USUARIO
+ * @author Sandro Córdova
  */
 public class Cita {
     private String nombres;

@@ -6,6 +6,8 @@
 package agenteinteligente;
 
 import baseDeDatos.Conexion;
+import clases.Cita;
+import clases.Extension;
 import clases.Sintoma;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -23,8 +25,21 @@ import java.util.ArrayList;
 public class borradores {
 
     public static void main(String[] args) {
+        
+        Conexion conexion = new Conexion();
+        ArrayList<Cita> listaExtensiones = new ArrayList<Cita>();
+        listaExtensiones = conexion.buscarCitas();
+        
+        System.out.println(listaExtensiones);  
+        
+        Cita cita = new Cita();
+        cita = conexion.buscarCita(listaExtensiones, "1150261905");
+        System.out.println(cita.getCorreo());
         //Abre comunicacion con la base de datos
-        Conexion coneccion = new Conexion();
+////////        Conexion coneccion = new Conexion();
+////////        Conexion coneccion2 = new Conexion();
+////////        coneccion.insertarExtension("0725496","23","Departamento de información", "False");
+////////        coneccion2.insertarExtension("0725496","12","Atención al cliente", "True");
 //        ArrayList<Sintoma> sintomasReferencia = new ArrayList<Sintoma>();
 //
 //        sintomasReferencia = conexion.buscarSintomas();

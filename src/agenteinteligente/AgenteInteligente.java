@@ -87,7 +87,6 @@ public class AgenteInteligente extends Agent {
     //y toma decisiones acorde al resultado
     private void clasificarSintomas() {
         //Se traen los sintomas de la base de datos
-        //Abre comunicacion con la base de datos
         Conexion conexion = new Conexion();
         ArrayList<Sintoma> sintomasReferencia = new ArrayList<Sintoma>();
         sintomasReferencia = conexion.buscarSintomas();
@@ -106,9 +105,10 @@ public class AgenteInteligente extends Agent {
             if (sintomas.contains(sintoma.getNombre())) {
                 //registra los sintomas del paciente a la base de datos
                 Conexion conexion2 = new Conexion();
-                conexion2.insertarSintomaPaciente(paciente.getCedula(), sintoma.getNombre(), sintoma.getPrioridad());
-
+                conexion2.insertarSintomaPaciente(paciente.getCedula(), sintoma.getNombre(), 
+                        sintoma.getPrioridad());
                 sintomasPaciente.add(sintoma);
+                //Se asigana el grado de prioridad basado en los sintomas del paciente
                 if (sintoma.getPrioridad() == 1) {
                     contadorPrioridadUno++;
                 } else if (sintoma.getPrioridad() == 2) {
@@ -127,41 +127,36 @@ public class AgenteInteligente extends Agent {
             cadenaSintomas = cadenaSintomas + ",";
         }
 
-        //Se clasfica al paciente acorde a la prioridad, se almacena en la base de datos y se toma decisiones 
+        //Se clasfica al paciente acorde a la prioridad, se almacena el diagnostico en la base de datos 
+        //y se toma decisiones 
         Conexion conexionDiagnostico = new Conexion();
-
         if (contadorPrioridadTres >= 3) {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica urgente");
             diagnostico.setDetalles("se recetó medicina");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), diagnostico.getDiagnostico(),
-                    diagnostico.getDetalles());
-
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), 
+                    diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadTres();
         } else if (contadorPrioridadDos < 3) {
             diagnostico.setNumCedula("cedula" + paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica puede esperar");
             diagnostico.setDetalles("No hay observaciones");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), diagnostico.getDiagnostico(),
-                    diagnostico.getDetalles());
-
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), 
+                    diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadDos();
         } else if (contadorPrioridadDos >= 2) {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica opcional");
             diagnostico.setDetalles("No hay observaciones");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), diagnostico.getDiagnostico(),
-                    diagnostico.getDetalles());
-
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), 
+                    diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadDos();
         } else if (sintomas.length() > 0) {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("No requiere atención medica");
             diagnostico.setDetalles("No hay observaciones");
-
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), diagnostico.getDiagnostico(),
-                    diagnostico.getDetalles());
-
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
+                    diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadUno();
         }
 
@@ -170,7 +165,6 @@ public class AgenteInteligente extends Agent {
     private void datosPaciente(String numero_telefono) {
         //Conexion con la base de datos
         Conexion conexion = new Conexion();
-
         vista_persona vista_persona = new vista_persona();
         vista_persona.setVisible(true);
         paciente = new Paciente();
@@ -184,21 +178,17 @@ public class AgenteInteligente extends Agent {
                 String correo = vista_persona.cajaCorreo.getText();
                 int edad = Integer.parseInt(vista_persona.cajaEdad.getText());
                 vista_persona.setVisible(false);
-
                 paciente.setNum_telefono(numero_telefono);
                 paciente.setNombre(nombre);
                 paciente.setCedula(cedula);
                 paciente.setCorreo(correo);
                 paciente.setEdad(edad);
-
                 //Lo registra en la base de datos
                 conexion.insertarPaciente(numero_telefono, nombre, cedula, correo, edad);
-
                 sintomasPaciente();
             }
         };
         vista_persona.botonEnviar.addActionListener(al);
-
     }
 
     private void pacientePrioridadTres() {
@@ -215,9 +205,9 @@ public class AgenteInteligente extends Agent {
     private void pacientePrioridadUno() {
         medidasBioseguridad();
     }
-
+    
+    //Metodo encargado de generar una cita al paciente
     private void generarCita() {
-        System.out.println("GENERAR CITA");
         Cita cita = new Cita();
         cita.setNombres(paciente.getNombre());
         cita.setEdad(paciente.getEdad());
@@ -226,23 +216,20 @@ public class AgenteInteligente extends Agent {
         cita.setSintomas(cadenaSintomas);
         cita.setDiagnostico(diagnostico.getDiagnostico());
         cita.setNumTelefono(paciente.getNum_telefono());
-
+        //Se establece un formato a la fecha de la cita
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy/h:mm");
         String fecha = sdf.format(new Date());
-        System.out.println(fecha);
-
         cita.setFecha(fecha);
         
         //Se almacena en la base de datos
         Conexion conexionCita = new Conexion();
         conexionCita.insertarCita(cita.getNombres(), cita.getEdad(), cita.getCedula(),
                 cita.getCorreo(), cita.getSintomas(), cita.getDiagnostico(), cita.getFecha());
-        
-        //PResentar cita al usuario
+        //Presentar cita al usuario
         vista_sintomas vista_sintomas = new vista_sintomas();
         vista_sintomas.anuncio.setText("CITA GENERADA");
-        vista_sintomas.cajaSintomas.setText("Nombre: " + cita.getNombres() + " \nCorreo: " + cita.getCorreo()
-                + " \nFecha: " + cita.getFecha());
+        vista_sintomas.cajaSintomas.setText("Nombre: " + cita.getNombres() + " \nCorreo: " 
+                + cita.getCorreo() + " \nFecha: " + cita.getFecha());
         vista_sintomas.botonEnviar.setText("ACEPTAR");
         vista_sintomas.setVisible(true);
     }
