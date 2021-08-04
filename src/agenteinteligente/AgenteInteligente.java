@@ -57,7 +57,7 @@ public class AgenteInteligente extends Agent {
             public void action() {
 
                 if (paciente.getNombre() == null) {
-                    System.out.println("vacio");
+//                    System.out.println("vacio");
                 }
             }
         });

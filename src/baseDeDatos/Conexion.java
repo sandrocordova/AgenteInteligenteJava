@@ -31,10 +31,11 @@ public class Conexion {
     public Conexion() {
         try {
             Mongo mongo = new Mongo("localhost", 27017);
-            BaseDatos = mongo.getDB("prueba2");
+            BaseDatos = mongo.getDB("CallCenterBDD");
             coleccionLlamada = BaseDatos.getCollection("llamada");
             coleccionPaciente = BaseDatos.getCollection("paciente");
             coleccionCita = BaseDatos.getCollection("cita");
+            coleccionSintoma = BaseDatos.getCollection("sintomas");
             coleccionSintomaPaciente = BaseDatos.getCollection("sintoma_paciente");
             System.out.println("Base de datos conectada....");
         } catch (Exception e) {

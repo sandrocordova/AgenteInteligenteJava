@@ -24,23 +24,23 @@ public class borradores {
 
     public static void main(String[] args) {
         //Abre comunicacion con la base de datos
-        Conexion conexion = new Conexion();
-        ArrayList<Sintoma> sintomasReferencia = new ArrayList<Sintoma>();
+        Conexion coneccion = new Conexion();
+//        ArrayList<Sintoma> sintomasReferencia = new ArrayList<Sintoma>();
+//
+//        sintomasReferencia = conexion.buscarSintomas();
+//        for (int i = 0; i < sintomasReferencia.size(); i++) {
+//            Sintoma sintoma = new Sintoma();
+//            sintoma = sintomasReferencia.get(i);
+//            System.out.println(sintoma.getNombre());
+//        }
 
-        sintomasReferencia = conexion.buscarSintomas();
-        for (int i = 0; i < sintomasReferencia.size(); i++) {
-            Sintoma sintoma = new Sintoma();
-            sintoma = sintomasReferencia.get(i);
-            System.out.println(sintoma.getNombre());
-        }
-
-//        DB db;
-//        DBCollection tabla;
-//        try {
-//            Mongo mongo = new Mongo("localhost", 27017);
-//            db = mongo.getDB("prueba2");
-//            tabla = db.getCollection("sintomas");
-//            
+        DB db;
+        DBCollection tabla;
+        try {
+            Mongo mongo = new Mongo("localhost", 27017);
+            db = mongo.getDB("prueba2");
+            tabla = db.getCollection("sintomas");
+            
 //            BasicDBObject documento1 = new BasicDBObject();
 //                coneccion.insertarSintoma("gripe",1);
 //                coneccion.insertarSintoma("fiebre",3);
@@ -50,13 +50,13 @@ public class borradores {
 //                coneccion.insertarSintoma("presion",3);
 //            documento1.put("sintoma", "'" + "gripe" + "'");
 //            documento1.put("prioridad", 1);
-//          
+          
 //            tabla.insert(documento1);
         System.out.println(
                 "BASE DE DATOS GARGADA");
-//        } catch (Exception e) {
-//            System.out.println("ERROR AL CARGAR LA BASE DE DATOS");
-//        }
+        } catch (Exception e) {
+            System.out.println("ERROR AL CARGAR LA BASE DE DATOS");
+        }
 
     }
 
