@@ -6,6 +6,7 @@
 package agenteinteligente;
 
 import baseDeDatos.Conexion;
+import multimedias.CargarVoz;
 import clases.Cita;
 import clases.Extension;
 import clases.Sintoma;
@@ -16,7 +17,13 @@ import com.mongodb.DBCursor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.mongodb.Mongo;
+import com.sun.speech.freetts.Voice;
+import com.sun.speech.freetts.VoiceManager;
+import com.sun.speech.freetts.Tokenizer;
+import com.sun.speech.freetts.UtteranceProcessor;
 import java.util.ArrayList;
+
+import java.io.IOException;
 
 /**
  *
@@ -25,16 +32,45 @@ import java.util.ArrayList;
 public class borradores {
 
     public static void main(String[] args) {
-        
-        Conexion conexion = new Conexion();
-        ArrayList<Cita> listaExtensiones = new ArrayList<Cita>();
-        listaExtensiones = conexion.buscarCitas();
-        
-        System.out.println(listaExtensiones);  
-        
-        Cita cita = new Cita();
-        cita = conexion.buscarCita(listaExtensiones, "1150261905");
-        System.out.println(cita.getCorreo());
+//        Voice voice;
+//
+        CargarVoz cargarVoz = new CargarVoz();
+        cargarVoz.hablar("hello it´s me, sandro cordova");
+//        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+//        voice = VoiceManager.getInstance().getVoice("kevin16");
+//        String words = "Hola me llamo maria";
+//        if (voice != null) {
+//            voice.allocate();// Allocating Voice
+//            try {
+////                voice.setRate(190);// Setting the rate of the voice
+////                voice.setPitch(150);// Setting the Pitch of the voice
+//                voice.setVolume(3);// Setting the volume of the voice
+//                voice.speak(words);
+////                SpeakText(words);// Calling speak() method
+//
+//            } catch (Exception e1) {
+//                e1.printStackTrace();
+//            }
+//
+//        } else {
+//            throw new IllegalStateException("Cannot find voice: kevin16");
+//        }
+
+//        VoiceManager manager = VoiceManager.getInstance();
+////        System.setProperty("mbrola.base", "C:\\mbrola\\mbrola");
+//        = manager.getInstance().getVoice("kevin");
+//        voz.allocate();
+//        voz.speak("Hola soy sandro ");
+//        voz.deallocate();
+//        Conexion conexion = new Conexion();
+//        ArrayList<Cita> listaExtensiones = new ArrayList<Cita>();
+//        listaExtensiones = conexion.buscarCitas();
+//        
+//        System.out.println(listaExtensiones);  
+//        
+//        Cita cita = new Cita();
+//        cita = conexion.buscarCita(listaExtensiones, "1150261905");
+//        System.out.println(cita.getCorreo());
         //Abre comunicacion con la base de datos
 ////////        Conexion coneccion = new Conexion();
 ////////        Conexion coneccion2 = new Conexion();
@@ -48,14 +84,12 @@ public class borradores {
 //            sintoma = sintomasReferencia.get(i);
 //            System.out.println(sintoma.getNombre());
 //        }
-
-        DB db;
-        DBCollection tabla;
-        try {
-            Mongo mongo = new Mongo("localhost", 27017);
-            db = mongo.getDB("prueba2");
-            tabla = db.getCollection("sintomas");
-            
+//        DB db;
+//        DBCollection tabla;
+//        try {
+//            Mongo mongo = new Mongo("localhost", 27017);
+//            db = mongo.getDB("prueba2");
+//            tabla = db.getCollection("sintomas");
 //            BasicDBObject documento1 = new BasicDBObject();
 //                coneccion.insertarSintoma("gripe",1);
 //                coneccion.insertarSintoma("fiebre",3);
@@ -65,14 +99,12 @@ public class borradores {
 //                coneccion.insertarSintoma("presion",3);
 //            documento1.put("sintoma", "'" + "gripe" + "'");
 //            documento1.put("prioridad", 1);
-          
 //            tabla.insert(documento1);
-        System.out.println(
-                "BASE DE DATOS GARGADA");
-        } catch (Exception e) {
-            System.out.println("ERROR AL CARGAR LA BASE DE DATOS");
-        }
-
+//            System.out.println(
+//                    "BASE DE DATOS GARGADA");
+//        } catch (Exception e) {
+//            System.out.println("ERROR AL CARGAR LA BASE DE DATOS");
+//        }
     }
 
 //        Insertar
