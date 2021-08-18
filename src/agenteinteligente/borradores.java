@@ -6,9 +6,10 @@
 package agenteinteligente;
 
 import baseDeDatos.Conexion;
-import multimedias.CargarVoz;
+import multimedias.Lee;
 import clases.Cita;
 import clases.Extension;
+import clases.MedidaBioseguridad;
 import clases.Sintoma;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -17,13 +18,14 @@ import com.mongodb.DBCursor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.mongodb.Mongo;
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
-import com.sun.speech.freetts.Tokenizer;
-import com.sun.speech.freetts.UtteranceProcessor;
+//import com.sun.speech.freetts.Voice;
+//import com.sun.speech.freetts.VoiceManager;
+//import com.sun.speech.freetts.Tokenizer;
+//import com.sun.speech.freetts.UtteranceProcessor;
 import java.util.ArrayList;
 
 import java.io.IOException;
+import ventanas.vista_sintomas;
 
 /**
  *
@@ -33,9 +35,72 @@ public class borradores {
 
     public static void main(String[] args) {
 //        Voice voice;
+
+        Conexion coneccion = new Conexion();
+        Conexion coneccion1 = new Conexion();
+        Conexion coneccion2 = new Conexion();
+        Conexion coneccion3 = new Conexion();
+        Conexion coneccion4 = new Conexion();
+        Conexion coneccion5 = new Conexion();
+        Conexion coneccion6 = new Conexion();
+        Conexion coneccion7 = new Conexion();
+        coneccion.insertarSintoma("Fiebre leve",1);
+        coneccion1.insertarSintoma("Tos ",1);
+        coneccion2.insertarSintoma("Dolor de cabeza leve",1);
+        coneccion3.insertarSintoma("Síntomas de gripe",1);
+        coneccion4.insertarSintoma("Rinorrea",1);
+        coneccion5.insertarSintoma("Diarrea",1);
+        coneccion6.insertarSintoma("Dolor de espalda  ",1);
+        coneccion7.insertarSintoma("Dolor muscular",1);
+                  
+         
+//LEEr
+
+//        String medidas = "Medidas de Bioseguridad: \n";
+//        Conexion conexion = new Conexion();
+//        ArrayList<MedidaBioseguridad> listaMedidas = new ArrayList<MedidaBioseguridad>();
+//        listaMedidas = conexion.buscarMedidasBioseguridad();
 //
-        CargarVoz cargarVoz = new CargarVoz();
-        cargarVoz.hablar("hello it´s me, sandro cordova");
+//        for (int i = 0; i < listaMedidas.size(); i++) {
+//            MedidaBioseguridad medida = new MedidaBioseguridad();
+//            medida = listaMedidas.get(i);
+//            medidas = medidas + "- " + medida.getNombre() + ". \n";
+//        }
+//
+//        //Presentar las medidas de bioseguridad al usuario
+//        vista_sintomas vista_sintomas = new vista_sintomas();
+//        vista_sintomas.anuncio.setText("Medidas de bioseguridad");
+//        vista_sintomas.cajaSintomas.setText(medidas);
+//        vista_sintomas.botonEnviar.setText("ACEPTAR");
+//        vista_sintomas.setVisible(true);
+//
+//        //Se leen las medidas de bioseguridad al usuario
+//        Lee lee = new Lee();
+//        lee.leer(medidas);
+//FIN LEEER
+
+//////////        Conexion coneccion = new Conexion();
+//////////        Conexion coneccion1 = new Conexion();
+//////////        Conexion coneccion2 = new Conexion();
+//////////        Conexion coneccion3 = new Conexion();
+//////////        Conexion coneccion4 = new Conexion();
+//////////        Conexion coneccion5 = new Conexion();
+//////////        Conexion coneccion6 = new Conexion();
+//////////        Conexion coneccion7 = new Conexion();
+//////////        coneccion.insertarMedidaBioseguridad("Lavarse las manos con frecuencia con agua y jabón","s/n");
+//////////        coneccion1.insertarMedidaBioseguridad("Cubrirse al toser o estornudar","s/n");
+//////////        coneccion2.insertarMedidaBioseguridad("No escupir","s/n");
+//////////        coneccion3.insertarMedidaBioseguridad("Distanciamiento social","s/n");
+//////////        coneccion4.insertarMedidaBioseguridad("Evite tocarse los ojos","s/n");
+//////////        coneccion5.insertarMedidaBioseguridad("Uso de mascarilla","s/n");
+//////////        coneccion6.insertarMedidaBioseguridad("Uso de guantes","s/n");
+//////////        coneccion7.insertarMedidaBioseguridad("Al momento de acudir a un centro de salud hacerlo de preferencia solo o con un acompañante","s/n");
+                  
+                  
+//        Escucha esc = new Escucha();
+//        esc.escuchar();
+//        Lee lee = new Lee();
+//        lee.leer("hello it´s me, sandro cordova");
 //        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
 //        voice = VoiceManager.getInstance().getVoice("kevin16");
 //        String words = "Hola me llamo maria";
@@ -55,7 +120,6 @@ public class borradores {
 //        } else {
 //            throw new IllegalStateException("Cannot find voice: kevin16");
 //        }
-
 //        VoiceManager manager = VoiceManager.getInstance();
 ////        System.setProperty("mbrola.base", "C:\\mbrola\\mbrola");
 //        = manager.getInstance().getVoice("kevin");

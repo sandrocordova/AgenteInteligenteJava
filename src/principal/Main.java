@@ -16,7 +16,7 @@ import jade.wrapper.ContainerController;
 import javax.swing.JOptionPane;
 import clases.Llamada;
 import clases.Paciente;
-import clases.Sintoma;
+import clases.Sintoma; 
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import java.awt.event.ActionEvent;
@@ -178,7 +178,7 @@ public class Main {
                 for (int i = 0; i < listaCitas.size(); i++) {
                     Cita cita = new Cita();
                     cita = listaCitas.get(i);
-                    str = "Paciente: " + cita.getNombres()
+                    str = str+"Paciente: " + cita.getNombres()
                             + "\nCedula: " + cita.getCedula()
                             + "\nFecha de la cita: " + cita.getFecha() + "\n\n";
                 }
@@ -257,7 +257,7 @@ public class Main {
                 for (int i = 0; i < listaPacientes.size(); i++) {
                     Paciente paciente = new Paciente();
                     paciente = listaPacientes.get(i);
-                    str = "Paciente: " + paciente.getNombre()
+                    str = str+"Paciente: " + paciente.getNombre()
                             + "\nCedula: " + paciente.getCedula()
                             + "\nTelefono: " + paciente.getNum_telefono() + "\n\n";
                 }

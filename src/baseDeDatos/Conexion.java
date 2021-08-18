@@ -8,6 +8,7 @@ package baseDeDatos;
 import clases.Cita;
 import clases.Sintoma;
 import clases.Extension;
+import clases.MedidaBioseguridad;
 import clases.Paciente;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -30,6 +31,7 @@ public class Conexion {
     DBCollection coleccionExtension;
     DBCollection coleccionDiagnostico;
     DBCollection coleccionCita;
+    DBCollection coleccionMedidaBioseguridad;
     DBCollection coleccionSintomaPaciente;
     BasicDBObject documento = new BasicDBObject();
 
@@ -40,6 +42,7 @@ public class Conexion {
             coleccionLlamada = BaseDatos.getCollection("llamada");
             coleccionPaciente = BaseDatos.getCollection("paciente");
             coleccionCita = BaseDatos.getCollection("cita");
+            coleccionMedidaBioseguridad = BaseDatos.getCollection("medida_bioseguridad");
             coleccionExtension = BaseDatos.getCollection("extension");
             coleccionSintoma = BaseDatos.getCollection("sintomas");
             coleccionDiagnostico = BaseDatos.getCollection("diagnostico");
@@ -57,6 +60,14 @@ public class Conexion {
         coleccionLlamada.insert(documento);
         return true;
     }
+    
+    //Crea un registro con las medidas de bioseguridad del call center
+    public boolean insertarMedidaBioseguridad(String nombre, String detalle) {
+        documento.put("nombre", nombre);
+        documento.put("detalle", detalle);
+        coleccionMedidaBioseguridad.insert(documento);
+        return true;
+    }
 
     //Inserta los sìntomas de referencia para poder comparar con los del paciente
     public boolean insertarSintoma(String sintoma, int prioridad) {
@@ -66,6 +77,20 @@ public class Conexion {
         return true;
     }
 
+    //Obtener los sìntomas de referencia de la base de datos
+    public ArrayList<MedidaBioseguridad> buscarMedidasBioseguridad() {
+        DBCursor cursor = coleccionMedidaBioseguridad.find();
+        ArrayList<MedidaBioseguridad> listaMedidas = new ArrayList<MedidaBioseguridad>();
+        while (cursor.hasNext()) {
+            MedidaBioseguridad medida = new MedidaBioseguridad();
+            DBObject object = cursor.next();
+            medida.setNombre(String.valueOf(object.get("nombre")));
+            medida.setDetalle(String.valueOf(object.get("detalle")));
+            listaMedidas.add(medida);
+        }
+        return listaMedidas;
+    }
+    
     //Obtener los sìntomas de referencia de la base de datos
     public ArrayList<Sintoma> buscarSintomas() {
         DBCursor cursor = coleccionSintoma.find();
@@ -109,7 +134,7 @@ public class Conexion {
         return true;
     }
 
-        //Obtener las extensiones disponibles de la base de datos
+    //Obtener las extensiones disponibles de la base de datos
     public ArrayList<Extension> buscarExtension() {
         DBCursor cursor = coleccionExtension.find();
         ArrayList<Extension> listaExtensiones = new ArrayList<Extension>();

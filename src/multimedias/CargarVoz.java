@@ -5,8 +5,8 @@
  */
 package multimedias;
 
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
+//import com.sun.speech.freetts.Voice;
+//import com.sun.speech.freetts.VoiceManager;
 import java.util.Locale;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
@@ -16,13 +16,12 @@ import javax.speech.synthesis.SynthesizerModeDesc;
  */
 public class CargarVoz {
 
-    VoiceManager freeVM;
-    Voice voice;
+//    VoiceManager freeVM;
+//    Voice voice;
 
     public CargarVoz() {
 
         System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-//        System.setProperty("mbrola.base", "C:\\mbrola\\mbrola");
         System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
 // SynthesizerModeDesc desc = new SynthesizerModeDesc(null, "general", Locale.CHINA, null, null);
 

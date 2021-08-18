@@ -9,6 +9,7 @@ import baseDeDatos.Conexion;
 import clases.Cita;
 import clases.Diagnostico;
 import clases.Llamada;
+import clases.MedidaBioseguridad;
 import clases.Paciente;
 import clases.Sintoma;
 import jade.core.AID;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import multimedias.Lee;
 import ventanas.vista_opciones;
 import ventanas.vista_persona;
 import ventanas.vista_sintomas;
@@ -105,7 +107,7 @@ public class AgenteInteligente extends Agent {
             if (sintomas.contains(sintoma.getNombre())) {
                 //registra los sintomas del paciente a la base de datos
                 Conexion conexion2 = new Conexion();
-                conexion2.insertarSintomaPaciente(paciente.getCedula(), sintoma.getNombre(), 
+                conexion2.insertarSintomaPaciente(paciente.getCedula(), sintoma.getNombre(),
                         sintoma.getPrioridad());
                 sintomasPaciente.add(sintoma);
                 //Se asigana el grado de prioridad basado en los sintomas del paciente
@@ -134,21 +136,21 @@ public class AgenteInteligente extends Agent {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica urgente");
             diagnostico.setDetalles("se recetó medicina");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), 
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadTres();
         } else if (contadorPrioridadDos < 3) {
             diagnostico.setNumCedula("cedula" + paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica puede esperar");
             diagnostico.setDetalles("No hay observaciones");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), 
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadDos();
         } else if (contadorPrioridadDos >= 2) {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica opcional");
             diagnostico.setDetalles("No hay observaciones");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(), 
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             pacientePrioridadDos();
         } else if (sintomas.length() > 0) {
@@ -205,9 +207,10 @@ public class AgenteInteligente extends Agent {
     private void pacientePrioridadUno() {
         medidasBioseguridad();
     }
-    
+
     //Metodo encargado de generar una cita al paciente
     private void generarCita() {
+        //Se inicializa el objeto cita
         Cita cita = new Cita();
         cita.setNombres(paciente.getNombre());
         cita.setEdad(paciente.getEdad());
@@ -220,25 +223,60 @@ public class AgenteInteligente extends Agent {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy/h:mm");
         String fecha = sdf.format(new Date());
         cita.setFecha(fecha);
-        
         //Se almacena en la base de datos
         Conexion conexionCita = new Conexion();
         conexionCita.insertarCita(cita.getNombres(), cita.getEdad(), cita.getCedula(),
                 cita.getCorreo(), cita.getSintomas(), cita.getDiagnostico(), cita.getFecha());
         //Presentar cita al usuario
+        String citaTexto = "Nombre: " + cita.getNombres() + " \nCorreo: "
+                + cita.getCorreo() + " \nFecha: " + cita.getFecha();
         vista_sintomas vista_sintomas = new vista_sintomas();
         vista_sintomas.anuncio.setText("CITA GENERADA");
-        vista_sintomas.cajaSintomas.setText("Nombre: " + cita.getNombres() + " \nCorreo: " 
-                + cita.getCorreo() + " \nFecha: " + cita.getFecha());
+        vista_sintomas.cajaSintomas.setText(citaTexto);
         vista_sintomas.botonEnviar.setText("ACEPTAR");
         vista_sintomas.setVisible(true);
+        //Se lee la información de la cita médica al usuario
+        Lee lee = new Lee();
+        lee.leer(citaTexto);
     }
 
     private void recetarMedicina() {
+        //Presentar el medicamento al usuario
+        String medicamentos = "En caso de emergencia\n"
+                + "se recomienda la administración de: " + "\n---PARACETAMOL---";
+        vista_sintomas vista_sintomas = new vista_sintomas();
+        vista_sintomas.anuncio.setText("Medicina");
+        vista_sintomas.cajaSintomas.setText(medicamentos);
+        vista_sintomas.botonEnviar.setText("ACEPTAR");
+        vista_sintomas.setVisible(true);
+        //Se leen los medicamentos al usuario
+        Lee lee = new Lee();
+        lee.leer(medicamentos);
+
         System.out.println("RECETAR MEDICINA");
     }
 
     private void medidasBioseguridad() {
+        String medidas = "Medidas de Bioseguridad: \n";
+        //Establece conexión con la base de datos
+        Conexion conexion = new Conexion();
+        ArrayList<MedidaBioseguridad> listaMedidas = new ArrayList<MedidaBioseguridad>();
+        listaMedidas = conexion.buscarMedidasBioseguridad();
+        //For s eencarga de formar el mensaje que se presentará al usuario
+        for (int i = 0; i < listaMedidas.size(); i++) {
+            MedidaBioseguridad medida = new MedidaBioseguridad();
+            medida = listaMedidas.get(i);
+            medidas = medidas +"- "+medida.getNombre()+". \n";
+        }
+        //Presentar las medidas de bioseguridad al usuario
+        vista_sintomas vista_sintomas = new vista_sintomas();
+        vista_sintomas.anuncio.setText("Medidas de bioseguridad");
+        vista_sintomas.cajaSintomas.setText(medidas);
+        vista_sintomas.botonEnviar.setText("ACEPTAR");
+        vista_sintomas.setVisible(true);
+        //Se leen las medidas de bioseguridad al usuario
+        Lee lee = new Lee();
+        lee.leer(medidas);
         System.out.println("MULTIMEDIA DE MEDIDAS BIOSEGURIDAD");
     }
 }
