@@ -111,12 +111,15 @@ public class AgenteInteligente extends Agent {
                         sintoma.getPrioridad());
                 sintomasPaciente.add(sintoma);
                 //Se asigana el grado de prioridad basado en los sintomas del paciente
-                if (sintoma.getPrioridad() == 1) {
-                    contadorPrioridadUno++;
+                if (sintoma.getPrioridad() == 3) {
+                    contadorPrioridadTres++;
+                    System.out.println("Sintoma P3 Encontrado: "+sintoma.getNombre());
                 } else if (sintoma.getPrioridad() == 2) {
                     contadorPrioridadDos++;
-                } else {
-                    contadorPrioridadTres++;
+                    System.out.println("Sintoma P2 Encontrado: "+sintoma.getNombre());
+                } else if (sintoma.getPrioridad() == 1){
+                    contadorPrioridadUno++;
+                    System.out.println("Sintoma P1 Encontrado: "+sintoma.getNombre());
                 }
             }
         }
@@ -128,7 +131,7 @@ public class AgenteInteligente extends Agent {
             cadenaSintomas = cadenaSintomas + sintomasPaciente.get(i).getNombre();
             cadenaSintomas = cadenaSintomas + ",";
         }
-
+        
         //Se clasfica al paciente acorde a la prioridad, se almacena el diagnostico en la base de datos 
         //y se toma decisiones 
         Conexion conexionDiagnostico = new Conexion();
@@ -138,27 +141,31 @@ public class AgenteInteligente extends Agent {
             diagnostico.setDetalles("se recetó medicina");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
+            System.out.println("PACIENTE PRIORIDAD UNO");
             pacientePrioridadTres();
-        } else if (contadorPrioridadDos < 3) {
-            diagnostico.setNumCedula("cedula" + paciente.getCedula());
-            diagnostico.setDiagnostico("Atención medica puede esperar");
-            diagnostico.setDetalles("No hay observaciones");
-            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
-                    diagnostico.getDiagnostico(), diagnostico.getDetalles());
-            pacientePrioridadDos();
-        } else if (contadorPrioridadDos >= 2) {
+        } else if (contadorPrioridadTres == 2) {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("Atención medica opcional");
             diagnostico.setDetalles("No hay observaciones");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
+            System.out.println("PACIENTE PRIORIDAD DOS");
             pacientePrioridadDos();
-        } else if (sintomas.length() > 0) {
+        } else if (contadorPrioridadDos >= 3) {
+            diagnostico.setNumCedula(paciente.getCedula());
+            diagnostico.setDiagnostico("Atención medica opcional");
+            diagnostico.setDetalles("No hay observaciones");
+            conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
+                    diagnostico.getDiagnostico(), diagnostico.getDetalles());
+            System.out.println("PACIENTE PRIORIDAD DOS");
+            pacientePrioridadDos();
+        }else if (sintomas.length() >= 0) {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("No requiere atención medica");
             diagnostico.setDetalles("No hay observaciones");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
+            System.out.println("PACIENTE PRIORIDAD TRES");
             pacientePrioridadUno();
         }
 
@@ -228,8 +235,9 @@ public class AgenteInteligente extends Agent {
         conexionCita.insertarCita(cita.getNombres(), cita.getEdad(), cita.getCedula(),
                 cita.getCorreo(), cita.getSintomas(), cita.getDiagnostico(), cita.getFecha());
         //Presentar cita al usuario
-        String citaTexto = "Nombre: " + cita.getNombres() + " \nCorreo: "
-                + cita.getCorreo() + " \nFecha: " + cita.getFecha();
+        String citaTexto = "Se ha generado una cita\na Nombre de: " + cita.getNombres() + 
+                " \n con el Correo electrónico: \n"
+                + cita.getCorreo() + " \n Fecha de la cita:\n " + cita.getFecha();
         vista_sintomas vista_sintomas = new vista_sintomas();
         vista_sintomas.anuncio.setText("CITA GENERADA");
         vista_sintomas.cajaSintomas.setText(citaTexto);

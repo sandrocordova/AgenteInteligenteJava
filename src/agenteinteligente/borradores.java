@@ -34,28 +34,60 @@ import ventanas.vista_sintomas;
 public class borradores {
 
     public static void main(String[] args) {
+        System.out.println("inicia");
+        Lee lee = new Lee();
+        lee.leer("Hola mundo");
+
+//        escucharOpcion2();
 //        Voice voice;
 
-        Conexion coneccion = new Conexion();
-        Conexion coneccion1 = new Conexion();
-        Conexion coneccion2 = new Conexion();
-        Conexion coneccion3 = new Conexion();
-        Conexion coneccion4 = new Conexion();
-        Conexion coneccion5 = new Conexion();
-        Conexion coneccion6 = new Conexion();
-        Conexion coneccion7 = new Conexion();
-        coneccion.insertarSintoma("Fiebre leve",1);
-        coneccion1.insertarSintoma("Tos ",1);
-        coneccion2.insertarSintoma("Dolor de cabeza leve",1);
-        coneccion3.insertarSintoma("Síntomas de gripe",1);
-        coneccion4.insertarSintoma("Rinorrea",1);
-        coneccion5.insertarSintoma("Diarrea",1);
-        coneccion6.insertarSintoma("Dolor de espalda  ",1);
-        coneccion7.insertarSintoma("Dolor muscular",1);
-                  
-         
+//--------------INSERTAR SINTOMAS A LA BASE DE DATOS
+//        Conexion coneccion = new Conexion();
+//        Conexion coneccion1 = new Conexion();
+//        Conexion coneccion2 = new Conexion();
+//        Conexion coneccion3 = new Conexion();
+//        Conexion coneccion4 = new Conexion();
+//        Conexion coneccion5 = new Conexion();
+//        Conexion coneccion6 = new Conexion();
+//        Conexion coneccion7 = new Conexion();
+//        Conexion coneccion8 = new Conexion();
+//        Conexion coneccion9 = new Conexion();
+//        Conexion coneccion10 = new Conexion();
+//        Conexion coneccion11 = new Conexion();
+//        Conexion coneccion12 = new Conexion();
+//        Conexion coneccion13 = new Conexion();
+//        coneccion.insertarSintoma("Fiebre leve",1);
+//        coneccion1.insertarSintoma("Tos ",1);
+//        coneccion2.insertarSintoma("Dolor de cabeza leve",1);
+//        coneccion3.insertarSintoma("Síntomas de gripe",1);
+//        coneccion4.insertarSintoma("Rinorrea",1);
+//        coneccion5.insertarSintoma("Diarrea",1);
+//        coneccion6.insertarSintoma("Dolor de espalda  ",1);
+//        coneccion7.insertarSintoma("Dolor muscular",1);
+//        coneccion.insertarSintoma("Nauseas",3);
+//        coneccion1.insertarSintoma("Vomito",3);
+//        coneccion2.insertarSintoma("Dolores musculares",3);
+//        coneccion3.insertarSintoma("Disnea",3);
+//        coneccion4.insertarSintoma("Cianosis",3);
+//        coneccion5.insertarSintoma("Hipotension",3);
+//        coneccion6.insertarSintoma("Confusion",3);
+//        coneccion7.insertarSintoma("Dolor al respirar",3);
+//        coneccion8.insertarSintoma("Fiebre alta",3);
+//        coneccion9.insertarSintoma("Baja saturacion",3);
+//        coneccion10.insertarSintoma("Tos productiva",3);
+//        coneccion11.insertarSintoma("Perdida del gusto",3);
+//        coneccion12.insertarSintoma("Perdida del olfato",3);
+//        coneccion.insertarSintoma("Dificultad para respirar",2);
+//        coneccion1.insertarSintoma("Perdida del olfato",2);
+//        coneccion2.insertarSintoma("Perdida del gusto",2);
+//        coneccion3.insertarSintoma("Dolor de garganta ",2);
+//        coneccion4.insertarSintoma("Tos persistente",2);
+//        coneccion5.insertarSintoma("Fiebre alta",2);
+//        coneccion6.insertarSintoma("Dolor de cuerpo",2);
+//        coneccion7.insertarSintoma("Mialgias",2);
+//        coneccion8.insertarSintoma("Anosmia",2);
+//--------------- FIN DE INSERTAR SINTOMAS A LA BASE DE DATOOS
 //LEEr
-
 //        String medidas = "Medidas de Bioseguridad: \n";
 //        Conexion conexion = new Conexion();
 //        ArrayList<MedidaBioseguridad> listaMedidas = new ArrayList<MedidaBioseguridad>();
@@ -78,7 +110,6 @@ public class borradores {
 //        Lee lee = new Lee();
 //        lee.leer(medidas);
 //FIN LEEER
-
 //////////        Conexion coneccion = new Conexion();
 //////////        Conexion coneccion1 = new Conexion();
 //////////        Conexion coneccion2 = new Conexion();
@@ -95,10 +126,6 @@ public class borradores {
 //////////        coneccion5.insertarMedidaBioseguridad("Uso de mascarilla","s/n");
 //////////        coneccion6.insertarMedidaBioseguridad("Uso de guantes","s/n");
 //////////        coneccion7.insertarMedidaBioseguridad("Al momento de acudir a un centro de salud hacerlo de preferencia solo o con un acompañante","s/n");
-                  
-                  
-//        Escucha esc = new Escucha();
-//        esc.escuchar();
 //        Lee lee = new Lee();
 //        lee.leer("hello it´s me, sandro cordova");
 //        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
@@ -169,6 +196,17 @@ public class borradores {
 //        } catch (Exception e) {
 //            System.out.println("ERROR AL CARGAR LA BASE DE DATOS");
 //        }
+    }
+
+    public static void escucharOpcion2() {
+        String opcion = "null";
+        Escucha esc = new Escucha();
+        esc.escuchar();
+        opcion = esc.Llenar("vacio");
+            System.out.println(opcion);
+//        while (opcion != "Funciona") {
+//        }
+        System.out.println("FIN");
     }
 
 //        Insertar

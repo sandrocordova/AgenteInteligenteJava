@@ -5,6 +5,7 @@
  */
 package principal;
 
+import agenteinteligente.Escucha;
 import baseDeDatos.Conexion;
 import clases.Cita;
 import clases.Extension;
@@ -21,7 +22,17 @@ import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Locale;
+import javax.speech.Central;
+import javax.speech.EngineModeDesc;
+import javax.speech.recognition.Recognizer;
+import javax.speech.recognition.Result;
+import javax.speech.recognition.ResultAdapter;
+import javax.speech.recognition.ResultEvent;
+import javax.speech.recognition.ResultToken;
+import javax.speech.recognition.RuleGrammar;
 import ventanas.vista_administrador;
 import ventanas.vista_gestion;
 import static ventanas.vista_gestion.anuncioCedulaCita;
@@ -40,7 +51,7 @@ import ventanas.vista_opciones;
  *
  * @author USUARIO
  */
-public class Main {
+public class Main{
 
     public static void main(String[] args) {
         boolean hayLlamada = false;
@@ -92,11 +103,18 @@ public class Main {
     }
 
     public static void hay_llamada(Llamada llamada) {
+        
+        
         vista_opciones vista_opciones = new vista_opciones();
+//        Escucha esc = new Escucha();
+//        esc.escuchar();
         vista_opciones.setVisible(true);
         vista_opciones.cajaOpciones.setText("DIGITE UNA OPCIÓN \n"
                 + "1. Transferir llamada \n"
                 + "2. Centro de información COVID-19");
+        
+  
+        
         ActionListener al = new ActionListener() {
             //Se activa al hacer click en el botón llamar
             @Override
@@ -123,6 +141,8 @@ public class Main {
             }
         };
         vista_opciones.botonEnviar.addActionListener(al);
+        
+        
     }
 
     public static void crear_agente(Llamada llamada) {
@@ -298,5 +318,4 @@ public class Main {
         };
         vista_gestion.btnEliminarPaciente.addActionListener(alEliminarPaciente);
     }
-
 }

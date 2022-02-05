@@ -17,6 +17,9 @@ public class vista_opciones extends javax.swing.JFrame {
     public vista_opciones() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
+        this.setTitle("Centro de llamadas COVID-19");
+        this.setResizable(false);
     }
 
     /**
