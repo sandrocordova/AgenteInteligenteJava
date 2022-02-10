@@ -34,27 +34,36 @@ public class vista_llamada extends javax.swing.JFrame {
         cajaNumero = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jPanel2 = new javax.swing.JPanel();
         botonLlamar = new javax.swing.JButton();
         anuncio1 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(51, 153, 255));
+        setBackground(new java.awt.Color(0, 0, 0));
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        cajaNumero.setBackground(new java.awt.Color(3, 111, 158));
+        cajaNumero.setForeground(new java.awt.Color(255, 255, 255));
         cajaNumero.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         cajaNumero.setText("0996484221");
-        jPanel1.add(cajaNumero, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 148, -1));
+        cajaNumero.setBorder(null);
+        jPanel1.add(cajaNumero, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 140, -1));
 
+        jLabel1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("INGRESE EL NÚMERO DE TELÉFONO");
         jLabel1.setFocusable(false);
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, -1, -1));
-        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 320, 20));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, 10, 400, -1));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 400, 20));
 
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
+        botonLlamar.setBackground(new java.awt.Color(255, 255, 255));
+        botonLlamar.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
+        botonLlamar.setForeground(new java.awt.Color(3, 111, 158));
+        botonLlamar.setBorder(null);
         botonLlamar.setLabel("LLAMAR");
         botonLlamar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -66,32 +75,30 @@ public class vista_llamada extends javax.swing.JFrame {
                 botonLlamarActionPerformed(evt);
             }
         });
-        jPanel2.add(botonLlamar, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, -1, -1));
+        jPanel1.add(botonLlamar, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 80, 20));
         botonLlamar.getAccessibleContext().setAccessibleName("");
 
+        anuncio1.setBackground(new java.awt.Color(3, 111, 158));
+        anuncio1.setFont(new java.awt.Font("Serif", 2, 14)); // NOI18N
+        anuncio1.setForeground(new java.awt.Color(255, 255, 255));
         anuncio1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         anuncio1.setFocusable(false);
-        jPanel2.add(anuncio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(107, 52, 171, 30));
+        jPanel1.add(anuncio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 400, 30));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 90, 120, 10));
+
+        fondo.setBackground(new java.awt.Color(102, 51, 0));
+        fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo azul.png"))); // NOI18N
+        jPanel1.add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 190));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -145,10 +152,11 @@ public class vista_llamada extends javax.swing.JFrame {
     public static javax.swing.JLabel anuncio1;
     public static javax.swing.JButton botonLlamar;
     public static javax.swing.JTextField cajaNumero;
+    private javax.swing.JLabel fondo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     // End of variables declaration//GEN-END:variables
 
 }

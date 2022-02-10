@@ -54,7 +54,6 @@ import ventanas.vista_opciones;
 public class Main{
 
     public static void main(String[] args) {
-        boolean hayLlamada = false;
         vista_llamada vista_llama = new vista_llamada();
         vista_llama.setVisible(true);
 
@@ -72,39 +71,36 @@ public class Main{
         vista_administrador.botonLlamar.addActionListener(alAdmin);
 
         //Bucle para escuchar constantemente las llamadas entrantes
-        while (!hayLlamada) {
             ActionListener al = new ActionListener() {
                 //Se activa al hacer click en el botón llamar
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //Almacena el número de la llamada que ingresa
                     String numero = vista_llama.cajaNumero.getText();
-                    if (numero.length() >= 5) {
+                    if ((numero.length() == 10 && numero.startsWith("09"))
+                            ||((numero.length() == 9)&&(numero.startsWith("02")||(numero.startsWith("03"))
+                            ||(numero.startsWith("04"))||(numero.startsWith("05"))||(numero.startsWith("07"))))) {
                         System.out.println(numero);
                         //Creamos el objeto "LLAMADA"
                         Llamada llamada = new Llamada();
                         //Asignamos número del celular/teléfono
                         llamada.setNum_telefono(numero);
-//                        vista_llama.anuncio1.setVisible(false);
                         //Reiniciamos el ingreso de nuevas llamadas
+                        vista_llama.anuncio1.setText("");
                         vista_llama.cajaNumero.setText("");
                         //Se activa el metodo para llamada entrante
                         hay_llamada(llamada);
-
-                    } else if (numero.length() <= 5) {
-                        vista_llama.anuncio1.setText("Opción no válida");
+                    } else {
+                        vista_llama.anuncio1.setText("El número ingresado no es válido ");
                     }
                 }
             };
             //creamos el escuchador
             vista_llama.botonLlamar.addActionListener(al);
-        }
 
     }
 
     public static void hay_llamada(Llamada llamada) {
-        
-        
         vista_opciones vista_opciones = new vista_opciones();
 //        Escucha esc = new Escucha();
 //        esc.escuchar();
@@ -112,8 +108,6 @@ public class Main{
         vista_opciones.cajaOpciones.setText("DIGITE UNA OPCIÓN \n"
                 + "1. Transferir llamada \n"
                 + "2. Centro de información COVID-19");
-        
-  
         
         ActionListener al = new ActionListener() {
             //Se activa al hacer click en el botón llamar
@@ -209,10 +203,13 @@ public class Main{
                 vista_gestion.anuncioFecha.setVisible(true);
                 vista_gestion.btnActualizarFecha.setVisible(true);
                 vista_gestion.btnEliminarCita.setVisible(true);
+                vista_gestion.separador1.setVisible(true);
+                vista_gestion.separador2.setVisible(true);
 
                 vista_gestion.cajaCedulaPaciente.setVisible(false);
                 vista_gestion.anuncioCedulaPaciente.setVisible(false);
                 vista_gestion.btnEliminarPaciente.setVisible(false);
+                vista_gestion.separador3.setVisible(false);
             }
         };
         vista_gestion.botonCitas.addActionListener(alCita);
@@ -288,10 +285,13 @@ public class Main{
                 vista_gestion.anuncioFecha.setVisible(false);
                 vista_gestion.btnActualizarFecha.setVisible(false);
                 vista_gestion.btnEliminarCita.setVisible(false);
+                vista_gestion.separador1.setVisible(false);
+                vista_gestion.separador2.setVisible(false);
 
                 vista_gestion.cajaCedulaPaciente.setVisible(true);
                 vista_gestion.anuncioCedulaPaciente.setVisible(true);
                 vista_gestion.btnEliminarPaciente.setVisible(true);
+                vista_gestion.separador3.setVisible(true);
             }
         };
         vista_gestion.botonPacientes.addActionListener(alPaciente);
