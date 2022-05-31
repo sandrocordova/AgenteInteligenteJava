@@ -18,6 +18,13 @@ import com.mongodb.DBCursor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.mongodb.Mongo;
+import java.awt.List;
+import java.io.BufferedReader;
+import java.io.File;
+
+import java.io.InputStream;
+import java.util.Scanner;
+import java.io.FileInputStream;
 //import com.sun.speech.freetts.Voice;
 //import com.sun.speech.freetts.VoiceManager;
 //import com.sun.speech.freetts.Tokenizer;
@@ -25,6 +32,8 @@ import com.mongodb.Mongo;
 import java.util.ArrayList;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 import ventanas.vista_sintomas;
 
 /**
@@ -34,13 +43,92 @@ import ventanas.vista_sintomas;
 public class borradores {
 
     public static void main(String[] args) {
-        System.out.println("inicia");
-        Lee lee = new Lee();
-        lee.leer("Hola mundo");
+        
+        String texto = "Bienvenido al Sistema de llamadas teléfonicas";
+        
+        System.out.println(texto.toLowerCase().contains(("Sistema DE llamadas").toLowerCase()));
+        
+//        String texto = "Bienvenido al Sistema de llamadas teléfonicas";
+//        
+//        texto = texto + " ... Opción 1, Transferir llamada a la recepción ... Opción 2, Centro de información de covid 19";
+//        texto = texto + " ... Por favor, Utilice su voz para seleccionar una de las opciones";
+//        
+//        Lee lee = new Lee();
+//        lee.leer(texto);
 
+//.----------------------------
+//        try {
+//                //Ponemos a "Dormir" el programa durante los ms que queremos
+//                Thread.sleep(10 * 1000);
+//            } catch (Exception e) {
+//                System.out.println(e);
+//            }
+//        ----ejecutar python funciona 100% felicicdades
+//        try {
+////            Runtime.getRuntime().exec("cmd /c start escuchar.py");
+////            Runtime.getRuntime().exec("cmd archivo.py");
+////            Runtime.getRuntime().exec("C:\\Users\\Usuario\\AppData\\Local\\Programs\\Python\\Python36\\python.exe C:\\Users\\Usuario\\Desktop\\archivo.py");
+//
+////            Process ps = Runtime.getRuntime().exec("cmd /c start cmd.exe /k \" cd C:\\Users\\Usuario\\Desktop py escuchar.py");
+//            Process ps = Runtime.getRuntime().exec("cmd /c start cmd.exe /k \" cd C:\\Users\\Usuario\\Desktop && py escuchar.py");
+//
+////            try {
+////                //Ponemos a "Dormir" el programa durante los ms que queremos
+////                Thread.sleep(5 * 1000);
+////            } catch (Exception e) {
+////                System.out.println(e);
+////            }
+//            //Leemos lo que devuelve la consola
+////            BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+////            String line;
+////            while ((line = reader.readLine()) != null) {
+////                System.out.println(line);
+////            }
+//            ps.waitFor();
+//
+////            Scanner scan = new Scanner(Runtime.getRuntime().exec("cmd /c start C:\\Users\\Usuario\\Desktop\\escuchar.py").getInputStream());
+////            String res = scan.hasNext() ? scan.next() : "";
+////            System.out.println(res);
+////            Runtime.getRuntime().exec("C:\\Users\\Usuario\\Desktop\\archivo.py");
+//        } catch (Exception e) {
+//        }
+//----------------------------------------
+//        try {
+//            ProcessBuilder pb = new ProcessBuilder();
+////            pb.command("ping", "google.com");
+//            pb.command("python", "escuchar.py");
+//            pb.directory(new File("C:\\Users\\Usuario\\Desktop\\"));
+//            //Obtener más información del proceso
+//            Process ps = pb.start();
+//            
+//            //Leemos lo que devuelve la consola
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+//            String line;
+//            while ((line = reader.readLine())!=null) {
+//                System.out.println(line);
+//            }
+//            
+//        } catch (Exception e) {
+//            System.out.println("Error en ejecución");
+//        }
+//----------------------LEER TXT
+//        System.out.println("inicia lectura...");
+//        try {
+//            InputStream ins = new FileInputStream("C:\\Users\\Usuario\\Desktop\\respuesta.txt");
+//            Scanner obj = new Scanner(ins);
+//            if (!obj.hasNext()) {
+//                System.out.println("está vacíon");
+//            }else{
+//                System.out.println(obj.nextLine());
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Se detectó un error en el archivo");
+//        }
+//------------------leeer por voz
+//        Lee lee = new Lee();
+//        lee.leer("Hola soy sandro");
 //        escucharOpcion2();
 //        Voice voice;
-
 //--------------INSERTAR SINTOMAS A LA BASE DE DATOS
 //        Conexion coneccion = new Conexion();
 //        Conexion coneccion1 = new Conexion();
@@ -203,7 +291,7 @@ public class borradores {
         Escucha esc = new Escucha();
         esc.escuchar();
         opcion = esc.Llenar("vacio");
-            System.out.println(opcion);
+        System.out.println(opcion);
 //        while (opcion != "Funciona") {
 //        }
         System.out.println("FIN");

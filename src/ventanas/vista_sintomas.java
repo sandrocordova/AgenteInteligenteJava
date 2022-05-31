@@ -19,6 +19,7 @@ public class vista_sintomas extends javax.swing.JFrame {
         //CSS
         this.setTitle("Centro de llamadas COVID-19");
         this.setResizable(false);
+//        botonEnviar.setEnabled(false);
     }
 
     /**
@@ -36,6 +37,7 @@ public class vista_sintomas extends javax.swing.JFrame {
         anuncio = new javax.swing.JLabel();
         botonEnviar = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(3, 111, 158));
 
         jPanel1.setBackground(new java.awt.Color(3, 111, 158));
@@ -45,6 +47,14 @@ public class vista_sintomas extends javax.swing.JFrame {
         cajaSintomas.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         cajaSintomas.setForeground(new java.awt.Color(4, 78, 105));
         cajaSintomas.setRows(5);
+        cajaSintomas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cajaSintomasKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cajaSintomasKeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(cajaSintomas);
 
         anuncio.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
@@ -69,7 +79,7 @@ public class vista_sintomas extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(botonEnviar)
-                .addGap(145, 145, 145))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -84,7 +94,7 @@ public class vista_sintomas extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(botonEnviar)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -104,6 +114,24 @@ public class vista_sintomas extends javax.swing.JFrame {
     private void botonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEnviarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_botonEnviarActionPerformed
+
+    private void cajaSintomasKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaSintomasKeyTyped
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cajaSintomasKeyTyped
+
+    private void cajaSintomasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaSintomasKeyReleased
+        // TODO add your handling code here:
+        habilitarBoton();
+    }//GEN-LAST:event_cajaSintomasKeyReleased
+
+    public void habilitarBoton() {
+        if (!cajaSintomas.getText().isEmpty()) {
+            botonEnviar.setEnabled(true);
+        } else {
+            botonEnviar.setEnabled(false);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -141,9 +169,9 @@ public class vista_sintomas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public static javax.swing.JLabel anuncio;
-    public static javax.swing.JButton botonEnviar;
-    public static javax.swing.JTextArea cajaSintomas;
+    public javax.swing.JLabel anuncio;
+    public javax.swing.JButton botonEnviar;
+    public javax.swing.JTextArea cajaSintomas;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

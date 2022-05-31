@@ -16,7 +16,7 @@ public class vista_administrador extends javax.swing.JFrame {
      */
     public vista_administrador() {
         initComponents();
-        this.setLocation(800, 100);
+        this.setLocation(1100, 50);
         //CSS
         this.setTitle("Centro de llamadas COVID-19");
         this.setResizable(false);

@@ -5,6 +5,9 @@
  */
 package ventanas;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author USUARIO
@@ -16,10 +19,11 @@ public class vista_persona extends javax.swing.JFrame {
      */
     public vista_persona() {
         initComponents();
-        this.setLocationRelativeTo(null);
         //CSS
         this.setTitle("Centro de llamadas COVID-19");
         this.setResizable(false);
+
+        botonEnviar.setEnabled(false);
     }
 
     /**
@@ -47,10 +51,16 @@ public class vista_persona extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         botonEnviar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        anuncio1 = new javax.swing.JLabel();
+        pasaporteCheck = new javax.swing.JCheckBox();
         jLabel6 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(3, 111, 158));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel1.setBackground(new java.awt.Color(3, 111, 158));
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         cajaNombre.setBackground(new java.awt.Color(3, 111, 158));
@@ -63,8 +73,16 @@ public class vista_persona extends javax.swing.JFrame {
                 cajaNombreActionPerformed(evt);
             }
         });
+        cajaNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cajaNombreKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cajaNombreKeyTyped(evt);
+            }
+        });
         jPanel1.add(cajaNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, 201, 20));
-        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 400, 10));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 430, 10));
 
         jSeparator2.setForeground(new java.awt.Color(255, 255, 255));
         jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, 210, 10));
@@ -93,9 +111,19 @@ public class vista_persona extends javax.swing.JFrame {
         cajaCedula.setForeground(new java.awt.Color(255, 255, 255));
         cajaCedula.setText("1150261905");
         cajaCedula.setBorder(null);
+        cajaCedula.setMaximumSize(new java.awt.Dimension(5, 5));
+        cajaCedula.setMinimumSize(new java.awt.Dimension(2, 2));
         cajaCedula.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cajaCedulaActionPerformed(evt);
+            }
+        });
+        cajaCedula.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cajaCedulaKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cajaCedulaKeyTyped(evt);
             }
         });
         jPanel1.add(cajaCedula, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 201, -1));
@@ -110,9 +138,15 @@ public class vista_persona extends javax.swing.JFrame {
         cajaCorreo.setForeground(new java.awt.Color(255, 255, 255));
         cajaCorreo.setText("sandro@gmail.com");
         cajaCorreo.setBorder(null);
+        cajaCorreo.setMaximumSize(new java.awt.Dimension(10, 10));
         cajaCorreo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cajaCorreoActionPerformed(evt);
+            }
+        });
+        cajaCorreo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cajaCorreoKeyReleased(evt);
             }
         });
         jPanel1.add(cajaCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 201, -1));
@@ -122,6 +156,14 @@ public class vista_persona extends javax.swing.JFrame {
         cajaEdad.setForeground(new java.awt.Color(255, 255, 255));
         cajaEdad.setText("22");
         cajaEdad.setBorder(null);
+        cajaEdad.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cajaEdadKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cajaEdadKeyTyped(evt);
+            }
+        });
         jPanel1.add(cajaEdad, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 201, -1));
 
         jLabel4.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
@@ -139,28 +181,38 @@ public class vista_persona extends javax.swing.JFrame {
                 botonEnviarActionPerformed(evt);
             }
         });
-        jPanel1.add(botonEnviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 150, 70, 20));
+        jPanel1.add(botonEnviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 180, 70, 20));
 
         jLabel5.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("DATOS PERSONALES");
         jLabel5.setFocusable(false);
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, -1));
+
+        anuncio1.setBackground(new java.awt.Color(3, 111, 158));
+        anuncio1.setFont(new java.awt.Font("Serif", 2, 14)); // NOI18N
+        anuncio1.setForeground(new java.awt.Color(255, 255, 255));
+        anuncio1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        anuncio1.setToolTipText("");
+        anuncio1.setFocusable(false);
+        jPanel1.add(anuncio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 420, 30));
+
+        pasaporteCheck.setBackground(new java.awt.Color(3, 111, 158));
+        pasaporteCheck.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 10)); // NOI18N
+        pasaporteCheck.setForeground(new java.awt.Color(255, 255, 255));
+        pasaporteCheck.setText("Pasaporte");
+        pasaporteCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasaporteCheckActionPerformed(evt);
+            }
+        });
+        jPanel1.add(pasaporteCheck, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 60, -1, -1));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo azul.png"))); // NOI18N
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 190));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 210));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -180,6 +232,87 @@ public class vista_persona extends javax.swing.JFrame {
     private void cajaNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cajaNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cajaNombreActionPerformed
+
+    private void cajaCedulaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaCedulaKeyTyped
+        // TODO add your handling code here:
+        if (pasaporteCheck.isSelected()) {
+            char c = evt.getKeyChar();
+            if ((c < '0' || c > '9') &&(c < 'a' || c > 'z') && (c < 'A') | c > 'Z')
+                evt.consume();
+        } else {
+            char c = evt.getKeyChar();
+            if (c < '0' || c > '9') {
+                evt.consume();
+            }
+        }
+        if (cajaCedula.getText().length() >= 10) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_cajaCedulaKeyTyped
+
+    private void cajaEdadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaEdadKeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+        if (c < '0' || c > '9')
+            evt.consume();
+    }//GEN-LAST:event_cajaEdadKeyTyped
+
+    private void cajaNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaNombreKeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+        if ((c < 'a' || c > 'z') && (c < 'A') | c > 'Z')
+            evt.consume();
+    }//GEN-LAST:event_cajaNombreKeyTyped
+
+    private void cajaCorreoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaCorreoKeyReleased
+        // TODO add your handling code here:
+        if (verificarCorreo(cajaCorreo.getText())) {
+            anuncio1.setText("");
+        } else {
+            anuncio1.setText("Correo No Válido");
+        }
+        habilitarBoton();
+    }//GEN-LAST:event_cajaCorreoKeyReleased
+
+    private void cajaNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaNombreKeyReleased
+        // TODO add your handling code here:
+        habilitarBoton();
+    }//GEN-LAST:event_cajaNombreKeyReleased
+
+    private void cajaCedulaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaCedulaKeyReleased
+        // TODO add your handling code here:
+
+        if (cajaCedula.getText().length() < 10) {
+            anuncio1.setText("Cédula No Válida");
+        } else {
+            anuncio1.setText("");
+        }
+        habilitarBoton();
+    }//GEN-LAST:event_cajaCedulaKeyReleased
+
+    private void cajaEdadKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaEdadKeyReleased
+        // TODO add your handling code here:
+        habilitarBoton();
+    }//GEN-LAST:event_cajaEdadKeyReleased
+
+    private void pasaporteCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasaporteCheckActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pasaporteCheckActionPerformed
+
+    public boolean verificarCorreo(String correo) {
+        Pattern patron = Pattern.compile("([a-z0-9]+(\\.?[a-z0-9])*)+@(([a-z]+)\\.([a-z]+))");
+        Matcher match = patron.matcher(correo);
+        return match.find();
+    }
+
+    public void habilitarBoton() {
+        if (!cajaNombre.getText().isEmpty() && !cajaCedula.getText().isEmpty()
+                && !cajaCorreo.getText().isEmpty() && !cajaEdad.getText().isEmpty() && anuncio1.getText().isEmpty()) {
+            botonEnviar.setEnabled(true);
+        } else {
+            botonEnviar.setEnabled(false);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -215,9 +348,11 @@ public class vista_persona extends javax.swing.JFrame {
                 new vista_persona().setVisible(true);
             }
         });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JLabel anuncio1;
     public static javax.swing.JButton botonEnviar;
     public static javax.swing.JTextField cajaCedula;
     public static javax.swing.JTextField cajaCorreo;
@@ -235,5 +370,6 @@ public class vista_persona extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JCheckBox pasaporteCheck;
     // End of variables declaration//GEN-END:variables
 }

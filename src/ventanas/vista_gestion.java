@@ -32,7 +32,7 @@ public class vista_gestion extends javax.swing.JFrame {
 //        this.setLocationRelativeTo(null);
         
         //CSS
-        this.setLocation(700, 100);
+        this.setLocation(900, 100);
         this.setTitle("Centro de llamadas COVID-19");
         this.setResizable(false);
     }
@@ -69,7 +69,7 @@ public class vista_gestion extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator1 = new javax.swing.JSeparator();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(3, 111, 158));
 
         jPanel1.setBackground(new java.awt.Color(3, 111, 158));

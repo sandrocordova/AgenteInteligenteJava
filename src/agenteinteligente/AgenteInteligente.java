@@ -40,12 +40,13 @@ public class AgenteInteligente extends Agent {
     private int seleccion;
     private String sintomas;
     private String cadenaSintomas;
+    private int contAgentes;
 
     public void setup() {
         System.out.println("----AGENTE CREADO-----");
         Object[] args = getArguments();
         System.out.println("Agente en ejecución: Agente" + args[0]);
-
+        contAgentes = Integer.parseInt(String.valueOf(args[2]));
         //Se da una tarea inicial al agente inteligente
         addBehaviour(new OneShotBehaviour(this) {
             public void action() {
@@ -77,6 +78,15 @@ public class AgenteInteligente extends Agent {
                 //Almacena el número de la llamada que ingresa
                 sintomas = vista_sintomas.cajaSintomas.getText();
                 vista_sintomas.setVisible(false);
+                //Sección de Código para ubicar las pestañas
+                if (contAgentes == 2) {
+                    vista_sintomas.setLocation(600, 270);
+                } else if (contAgentes == 3) {
+                    vista_sintomas.setLocation(600, 540);
+                } else {
+                    vista_sintomas.setLocation(600, 10);
+                }
+                //Termina sección
                 //Llamamos al método para clasificar los síntomas
                 clasificarSintomas();
             }
@@ -93,7 +103,12 @@ public class AgenteInteligente extends Agent {
         ArrayList<Sintoma> sintomasReferencia = new ArrayList<Sintoma>();
         sintomasReferencia = conexion.buscarSintomas();
 
-        //Contadores para poder clasificar los síntomas
+        /*
+        Contadores para poder clasificar los síntomas
+        
+        El uso de tres contadores es debido a que cada síntoma tiene su prioridad
+        por ende se debe usar un contador para cada prioridad.
+         */
         int contadorPrioridadUno = 0;
         int contadorPrioridadDos = 0;
         int contadorPrioridadTres = 0;
@@ -104,7 +119,9 @@ public class AgenteInteligente extends Agent {
         for (int i = 0; i < sintomasReferencia.size(); i++) {
             Sintoma sintoma = new Sintoma();
             sintoma = sintomasReferencia.get(i);
-            if (sintomas.contains(sintoma.getNombre())) {
+            //Sintomas contiene el string con los sintomas del paciente en donde se buscan los sintomas de referencia
+            //Estandarizamos los síntomas de referencia y los del paciente en minúsculas
+            if (sintomas.toLowerCase().contains(sintoma.getNombre().toLowerCase())) {
                 //registra los sintomas del paciente a la base de datos
                 Conexion conexion2 = new Conexion();
                 conexion2.insertarSintomaPaciente(paciente.getCedula(), sintoma.getNombre(),
@@ -113,27 +130,26 @@ public class AgenteInteligente extends Agent {
                 //Se asigana el grado de prioridad basado en los sintomas del paciente
                 if (sintoma.getPrioridad() == 3) {
                     contadorPrioridadTres++;
-                    System.out.println("Sintoma P3 Encontrado: "+sintoma.getNombre());
+                    System.out.println("Sintoma P3 Encontrado: " + sintoma.getNombre());
                 } else if (sintoma.getPrioridad() == 2) {
                     contadorPrioridadDos++;
-                    System.out.println("Sintoma P2 Encontrado: "+sintoma.getNombre());
-                } else if (sintoma.getPrioridad() == 1){
+                    System.out.println("Sintoma P2 Encontrado: " + sintoma.getNombre());
+                } else if (sintoma.getPrioridad() == 1) {
                     contadorPrioridadUno++;
-                    System.out.println("Sintoma P1 Encontrado: "+sintoma.getNombre());
+                    System.out.println("Sintoma P1 Encontrado: " + sintoma.getNombre());
                 }
             }
         }
 
-        //Generamos String de sintomas con formato CSV para presentar en consola
+        //Generamos String de sintomas con formato CSV para presentar en consola y por voz
         String cadenaSintomas = "";
         for (int i = 0; i < sintomasPaciente.size(); i++) {
             System.out.println("Sintomas encontrados: " + sintomasPaciente.get(i).getNombre());
             cadenaSintomas = cadenaSintomas + sintomasPaciente.get(i).getNombre();
             cadenaSintomas = cadenaSintomas + ",";
         }
-        
-        //Se clasfica al paciente acorde a la prioridad, se almacena el diagnostico en la base de datos 
-        //y se toma decisiones 
+
+        //Clasificación del paciente, almacenar el diagnostico en la bdd y toma decisiones 
         Conexion conexionDiagnostico = new Conexion();
         if (contadorPrioridadTres >= 3) {
             diagnostico.setNumCedula(paciente.getCedula());
@@ -141,7 +157,7 @@ public class AgenteInteligente extends Agent {
             diagnostico.setDetalles("se recetó medicina");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
-            System.out.println("PACIENTE PRIORIDAD UNO");
+            System.out.println("PACIENTE PRIORIDAD TRES -- Grado máximo");
             pacientePrioridadTres();
         } else if (contadorPrioridadTres == 2) {
             diagnostico.setNumCedula(paciente.getCedula());
@@ -149,7 +165,7 @@ public class AgenteInteligente extends Agent {
             diagnostico.setDetalles("No hay observaciones");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
-            System.out.println("PACIENTE PRIORIDAD DOS");
+            System.out.println("PACIENTE PRIORIDAD DOS -- Grado medio");
             pacientePrioridadDos();
         } else if (contadorPrioridadDos >= 3) {
             diagnostico.setNumCedula(paciente.getCedula());
@@ -157,15 +173,15 @@ public class AgenteInteligente extends Agent {
             diagnostico.setDetalles("No hay observaciones");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
-            System.out.println("PACIENTE PRIORIDAD DOS");
+            System.out.println("PACIENTE PRIORIDAD DOS -- Grado medio");
             pacientePrioridadDos();
-        }else if (sintomas.length() >= 0) {
+        } else {
             diagnostico.setNumCedula(paciente.getCedula());
             diagnostico.setDiagnostico("No requiere atención medica");
             diagnostico.setDetalles("No hay observaciones");
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
-            System.out.println("PACIENTE PRIORIDAD TRES");
+            System.out.println("PACIENTE PRIORIDAD UNO -- Grado leve");
             pacientePrioridadUno();
         }
 
@@ -176,6 +192,16 @@ public class AgenteInteligente extends Agent {
         Conexion conexion = new Conexion();
         vista_persona vista_persona = new vista_persona();
         vista_persona.setVisible(true);
+        //Sección de Código para ubicar las pestañas
+        if (contAgentes == 2) {
+            vista_persona.setLocation(600, 270);
+        } else if (contAgentes == 3) {
+            vista_persona.setLocation(600, 540);
+        } else {
+            vista_persona.setLocation(600, 10);
+        }
+        //Termina sección
+
         paciente = new Paciente();
         ActionListener al = new ActionListener() {
             //Se activa al hacer click en el botón llamar
@@ -200,9 +226,7 @@ public class AgenteInteligente extends Agent {
         vista_persona.botonEnviar.addActionListener(al);
     }
 
-    private void pacientePrioridadTres() {
-        generarCita();
-        recetarMedicina();
+    private void pacientePrioridadUno() {
         medidasBioseguridad();
     }
 
@@ -211,11 +235,13 @@ public class AgenteInteligente extends Agent {
         medidasBioseguridad();
     }
 
-    private void pacientePrioridadUno() {
+    private void pacientePrioridadTres() {
+        generarCita();
+        recetarMedicina();
         medidasBioseguridad();
     }
 
-    //Metodo encargado de generar una cita al paciente
+    //Metodo para generar una cita al paciente
     private void generarCita() {
         //Se inicializa el objeto cita
         Cita cita = new Cita();
@@ -235,35 +261,78 @@ public class AgenteInteligente extends Agent {
         conexionCita.insertarCita(cita.getNombres(), cita.getEdad(), cita.getCedula(),
                 cita.getCorreo(), cita.getSintomas(), cita.getDiagnostico(), cita.getFecha());
         //Presentar cita al usuario
-        String citaTexto = "Se ha generado una cita\na Nombre de: " + cita.getNombres() + 
-                " \n con el Correo electrónico: \n"
+        String citaTexto = "Se ha generado una cita\na Nombre de: " + cita.getNombres()
+                + " \n con el Correo electrónico: \n"
                 + cita.getCorreo() + " \n Fecha de la cita:\n " + cita.getFecha();
         vista_sintomas vista_sintomas = new vista_sintomas();
         vista_sintomas.anuncio.setText("CITA GENERADA");
         vista_sintomas.cajaSintomas.setText(citaTexto);
         vista_sintomas.botonEnviar.setText("ACEPTAR");
         vista_sintomas.setVisible(true);
+
+        //Agregamos al boton el evento de cerrar la ventada
+        ActionListener al = new ActionListener() {
+            //Se activa al hacer click en el botón llamar
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vista_sintomas.setVisible(false);
+            }
+        };
+        vista_sintomas.botonEnviar.addActionListener(al);
+
+        //Sección de Código para ubicar las pestañas
+        if (contAgentes == 2) {
+            vista_sintomas.setLocation(600, 270);
+        } else if (contAgentes == 3) {
+            vista_sintomas.setLocation(600, 540);
+        } else {
+            vista_sintomas.setLocation(600, 10);
+        }
+        //Termina sección
         //Se lee la información de la cita médica al usuario
-        Lee lee = new Lee();
-        lee.leer(citaTexto);
+//        Lee lee = new Lee();
+//        lee.leer(citaTexto);
+        System.out.println("GENERAR CITA MÉDICA");
     }
 
+    //Metodo para recetar medicina al paciente
     private void recetarMedicina() {
         //Presentar el medicamento al usuario
         String medicamentos = "En caso de emergencia\n"
                 + "se recomienda la administración de: " + "\n---PARACETAMOL---";
         vista_sintomas vista_sintomas = new vista_sintomas();
-        vista_sintomas.anuncio.setText("Medicina");
+        vista_sintomas.anuncio.setText("Medicina Recomendada");
         vista_sintomas.cajaSintomas.setText(medicamentos);
         vista_sintomas.botonEnviar.setText("ACEPTAR");
         vista_sintomas.setVisible(true);
+        
+        //Agregamos al boton el evento de cerrar la ventada
+        ActionListener al = new ActionListener() {
+            //Se activa al hacer click en el botón llamar
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vista_sintomas.setVisible(false);
+            }
+        };
+        vista_sintomas.botonEnviar.addActionListener(al);
+        
+        //Sección de Código para ubicar las pestañas
+        if (contAgentes == 2) {
+            vista_sintomas.setLocation(600, 270);
+        } else if (contAgentes == 3) {
+            vista_sintomas.setLocation(600, 540);
+        } else {
+            vista_sintomas.setLocation(600, 10);
+        }
+        //Termina sección
         //Se leen los medicamentos al usuario
-        Lee lee = new Lee();
-        lee.leer(medicamentos);
+//        Lee lee = new Lee();
+//        lee.leer(medicamentos);
 
         System.out.println("RECETAR MEDICINA");
     }
 
+    //Metodo para presentar las medidas de bioseguridad al paciente
     private void medidasBioseguridad() {
         String medidas = "Medidas de Bioseguridad: \n";
         //Establece conexión con la base de datos
@@ -274,7 +343,7 @@ public class AgenteInteligente extends Agent {
         for (int i = 0; i < listaMedidas.size(); i++) {
             MedidaBioseguridad medida = new MedidaBioseguridad();
             medida = listaMedidas.get(i);
-            medidas = medidas +"- "+medida.getNombre()+". \n";
+            medidas = medidas + "- " + medida.getNombre() + ". \n";
         }
         //Presentar las medidas de bioseguridad al usuario
         vista_sintomas vista_sintomas = new vista_sintomas();
@@ -282,9 +351,29 @@ public class AgenteInteligente extends Agent {
         vista_sintomas.cajaSintomas.setText(medidas);
         vista_sintomas.botonEnviar.setText("ACEPTAR");
         vista_sintomas.setVisible(true);
+        
+        //Agregamos al boton el evento de cerrar la ventada
+        ActionListener al = new ActionListener() {
+            //Se activa al hacer click en el botón llamar
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vista_sintomas.setVisible(false);
+            }
+        };
+        vista_sintomas.botonEnviar.addActionListener(al);
+        
+        //Sección de Código para ubicar las pestañas
+        if (contAgentes == 2) {
+            vista_sintomas.setLocation(600, 270);
+        } else if (contAgentes == 3) {
+            vista_sintomas.setLocation(600, 540);
+        } else {
+            vista_sintomas.setLocation(600, 10);
+        }
+        //Termina sección
         //Se leen las medidas de bioseguridad al usuario
-        Lee lee = new Lee();
-        lee.leer(medidas);
+//        Lee lee = new Lee();
+//        lee.leer(medidas);
         System.out.println("MULTIMEDIA DE MEDIDAS BIOSEGURIDAD");
     }
 }

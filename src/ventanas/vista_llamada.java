@@ -19,6 +19,8 @@ public class vista_llamada extends javax.swing.JFrame {
         //CSS
         this.setTitle("Centro de llamadas COVID-19");
         this.setResizable(false);
+        
+        this.setLocation(10, 10);
     }
 
     /**

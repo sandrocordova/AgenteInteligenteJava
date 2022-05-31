@@ -17,7 +17,7 @@ import jade.wrapper.ContainerController;
 import javax.swing.JOptionPane;
 import clases.Llamada;
 import clases.Paciente;
-import clases.Sintoma; 
+import clases.Sintoma;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import java.awt.event.ActionEvent;
@@ -33,6 +33,8 @@ import javax.speech.recognition.ResultAdapter;
 import javax.speech.recognition.ResultEvent;
 import javax.speech.recognition.ResultToken;
 import javax.speech.recognition.RuleGrammar;
+import multimedias.Escuchar;
+import multimedias.Lee;
 import ventanas.vista_administrador;
 import ventanas.vista_gestion;
 import static ventanas.vista_gestion.anuncioCedulaCita;
@@ -51,9 +53,13 @@ import ventanas.vista_opciones;
  *
  * @author USUARIO
  */
-public class Main{
+public class Main {
+
+    static int contAgentes = 0;
+    static int contAgentes2 = 0;
 
     public static void main(String[] args) {
+
         vista_llamada vista_llama = new vista_llamada();
         vista_llama.setVisible(true);
 
@@ -71,44 +77,74 @@ public class Main{
         vista_administrador.botonLlamar.addActionListener(alAdmin);
 
         //Bucle para escuchar constantemente las llamadas entrantes
-            ActionListener al = new ActionListener() {
-                //Se activa al hacer click en el botón llamar
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //Almacena el número de la llamada que ingresa
-                    String numero = vista_llama.cajaNumero.getText();
-                    if ((numero.length() == 10 && numero.startsWith("09"))
-                            ||((numero.length() == 9)&&(numero.startsWith("02")||(numero.startsWith("03"))
-                            ||(numero.startsWith("04"))||(numero.startsWith("05"))||(numero.startsWith("07"))))) {
-                        System.out.println(numero);
-                        //Creamos el objeto "LLAMADA"
-                        Llamada llamada = new Llamada();
-                        //Asignamos número del celular/teléfono
-                        llamada.setNum_telefono(numero);
-                        //Reiniciamos el ingreso de nuevas llamadas
-                        vista_llama.anuncio1.setText("");
-                        vista_llama.cajaNumero.setText("");
-                        //Se activa el metodo para llamada entrante
-                        hay_llamada(llamada);
-                    } else {
-                        vista_llama.anuncio1.setText("El número ingresado no es válido ");
-                    }
+        ActionListener al = new ActionListener() {
+            //Se activa al hacer click en el botón llamar
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Almacena el número de la llamada que ingresa
+                String numero = vista_llama.cajaNumero.getText();
+                if ((numero.length() == 10 && numero.startsWith("09"))
+                        || ((numero.length() == 9) && (numero.startsWith("02") || (numero.startsWith("03"))
+                        || (numero.startsWith("04")) || (numero.startsWith("05")) || (numero.startsWith("07"))))) {
+                    System.out.println(numero);
+                    //Creamos el objeto "LLAMADA"
+                    Llamada llamada = new Llamada();
+                    //Asignamos número del celular/teléfono
+                    llamada.setNum_telefono(numero);
+                    //Reiniciamos el ingreso de nuevas llamadas
+                    vista_llama.anuncio1.setText("");
+                    vista_llama.cajaNumero.setText("");
+
+                    //Se activa el metodo para llamada entrante
+                    hay_llamada(llamada);
+                } else {
+                    vista_llama.anuncio1.setText("El número ingresado no es válido ");
                 }
-            };
-            //creamos el escuchador
-            vista_llama.botonLlamar.addActionListener(al);
+            }
+        };
+        //creamos el escuchador
+        vista_llama.botonLlamar.addActionListener(al);
 
     }
 
     public static void hay_llamada(Llamada llamada) {
+
+        //Sección para contar el numero de agentes par ubicar las vistas
+        if (contAgentes2 == 4) {
+            contAgentes2 = 1;
+        } else {
+            contAgentes2++;
+        }
+        //termina sección
+        
+//        //--------------Inicia Interfaz de voz
+//        String texto = "Bienvenido al Sistema de llamadas teléfonicas";
+//        
+//        texto = texto + " ... Opción 1, Transferir llamada a la recepción ... Opción 2, Centro de información de covid 19";
+//        texto = texto + " ... Por favor, Utilice su voz para seleccionar una de las opciones";
+//        Lee lee = new Lee();
+//        lee.leer(texto);
+//        Escuchar escuchar = new Escuchar();
+//        texto = escuchar.leerTxt();
+//        lee.leer("Opción seleccionada: "+texto);
+        //2 segundos a lo mucho
+//        //--------------Inicia Interfaz de voz
+        
+        //--------------Inicia Interfaz gráfica
         vista_opciones vista_opciones = new vista_opciones();
-//        Escucha esc = new Escucha();
-//        esc.escuchar();
         vista_opciones.setVisible(true);
         vista_opciones.cajaOpciones.setText("DIGITE UNA OPCIÓN \n"
                 + "1. Transferir llamada \n"
                 + "2. Centro de información COVID-19");
-        
+        //Sección de Código para ubicar las pestañas
+        if (contAgentes2 == 2) {
+            vista_opciones.setLocation(600, 270);
+        } else if (contAgentes2 == 3) {
+            vista_opciones.setLocation(600, 540);
+        } else {
+            vista_opciones.setLocation(600, 10);
+        }
+        //Termina sección
         ActionListener al = new ActionListener() {
             //Se activa al hacer click en el botón llamar
             @Override
@@ -127,6 +163,14 @@ public class Main{
                 } else if (llamada.getSeleccion() == 2) {
                     //Lo registra en la base de datos
                     coneccion.insertarLlamada(llamada.getNum_telefono(), llamada.getSeleccion());
+                    //Sección para contar el numero de agentes
+                    if (contAgentes == 4) {
+                        contAgentes = 1;
+                    } else {
+                        contAgentes++;
+                    }
+                    //termina sección
+                    //llamamos a crear agente
                     crear_agente(llamada);
                     vista_opciones.setVisible(false);
                 } else {
@@ -135,8 +179,7 @@ public class Main{
             }
         };
         vista_opciones.botonEnviar.addActionListener(al);
-        
-        
+        //--------------Termina Interfaz gráfica
     }
 
     public static void crear_agente(Llamada llamada) {
@@ -150,8 +193,10 @@ public class Main{
         Object[] arguments = new Object[3];
         arguments[0] = llamada.getNum_telefono();
         arguments[1] = llamada.getSeleccion();
+        arguments[2] = contAgentes;
 
         try {
+            //inicia el agente inteligente y enviamos argumentos
             ac = cc.createNewAgent("Agente" + llamada.getNum_telefono(),
                     "agenteinteligente.AgenteInteligente", arguments);
             ac.start();
@@ -161,7 +206,7 @@ public class Main{
         }
     }
 
-    public static void transferir_llamada(Llamada llamada) {
+    public static boolean transferir_llamada(Llamada llamada) {
         Conexion conexion = new Conexion();
         ArrayList<Extension> listaExtensiones = new ArrayList<Extension>();
         listaExtensiones = conexion.buscarExtension();
@@ -171,8 +216,10 @@ public class Main{
             if (extension.getEstado().contains("True")) {
                 System.out.println("Su llamada ha sido transferida al:" + extension.getDetalle()
                         + " extensión: " + extension.getExtension());
+                return true;
             }
         }
+                return false;
     }
 
     public static void menuAdministrador() {
@@ -192,7 +239,7 @@ public class Main{
                 for (int i = 0; i < listaCitas.size(); i++) {
                     Cita cita = new Cita();
                     cita = listaCitas.get(i);
-                    str = str+"Paciente: " + cita.getNombres()
+                    str = str + "Paciente: " + cita.getNombres()
                             + "\nCedula: " + cita.getCedula()
                             + "\nFecha de la cita: " + cita.getFecha() + "\n\n";
                 }
@@ -274,7 +321,7 @@ public class Main{
                 for (int i = 0; i < listaPacientes.size(); i++) {
                     Paciente paciente = new Paciente();
                     paciente = listaPacientes.get(i);
-                    str = str+"Paciente: " + paciente.getNombre()
+                    str = str + "Paciente: " + paciente.getNombre()
                             + "\nCedula: " + paciente.getCedula()
                             + "\nTelefono: " + paciente.getNum_telefono() + "\n\n";
                 }
