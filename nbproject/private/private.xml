@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/principal/MainVoz.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/baseDeDatos/Conexion.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/ventanas/vista_llamada.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/multimedias/Escuchar.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/agenteinteligente/AgenteInteligenteVoz.java</file>
             <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/principal/Main.java</file>
-            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/ventanas/vista_sintomas.java</file>
-            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/agenteinteligente/AgenteInteligente.java</file>
+            <file>file:/C:/Users/Usuario/Documents/NetBeansProjects/agenteInteligente/src/multimedias/Lee.java</file>
         </group>
     </open-files>
 </project-private>
