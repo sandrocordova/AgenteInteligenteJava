@@ -5,25 +5,21 @@
  */
 package ventanas;
 
-import java.beans.Visibility;
-
 /**
  *
  * @author USUARIO
  */
-public class vista_llamada extends javax.swing.JFrame {
+public class vista_dominio extends javax.swing.JFrame {
 
     /**
      * Creates new form vista_llamada
      */
-    public vista_llamada() {
+    public vista_dominio() {
         initComponents();
         //CSS
+        this.setLocation(1100, 300);
         this.setTitle("Centro de llamadas COVID-19");
         this.setResizable(false);
-        this.setLocation(10, 10);
-        cajaNumero.setVisible(false);
-        jSeparator2.setVisible(false);
     }
 
     /**
@@ -36,44 +32,67 @@ public class vista_llamada extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        cajaNumero = new javax.swing.JTextField();
+        cajaDominio = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        cajaDetalle = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         botonLlamar = new javax.swing.JButton();
         anuncio1 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         fondo = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        cajaNumero.setBackground(new java.awt.Color(3, 111, 158));
-        cajaNumero.setForeground(new java.awt.Color(255, 255, 255));
-        cajaNumero.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        cajaNumero.setText("0900002003");
-        cajaNumero.setBorder(null);
-        cajaNumero.addActionListener(new java.awt.event.ActionListener() {
+        cajaDominio.setBackground(new java.awt.Color(3, 111, 158));
+        cajaDominio.setForeground(new java.awt.Color(255, 255, 255));
+        cajaDominio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        cajaDominio.setBorder(null);
+        cajaDominio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cajaNumeroActionPerformed(evt);
+                cajaDominioActionPerformed(evt);
             }
         });
-        jPanel1.add(cajaNumero, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 140, -1));
+        jPanel1.add(cajaDominio, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 140, -1));
 
-        jLabel1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("LLAMADA ENTRANTE");
+        jLabel1.setText("@");
         jLabel1.setFocusable(false);
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, 10, 400, -1));
-        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 400, 20));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 100, 10));
+
+        jLabel2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("INGRESE EL DOMINIO A REGISTRAR");
+        jLabel2.setFocusable(false);
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, 10, 320, -1));
+
+        jLabel4.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 10)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("Ejemplo: unl.edu.ec");
+        jLabel4.setFocusable(false);
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 160, -1));
+
+        cajaDetalle.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 10)); // NOI18N
+        cajaDetalle.setForeground(new java.awt.Color(255, 255, 255));
+        cajaDetalle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cajaDetalle.setText("  ");
+        cajaDetalle.setFocusable(false);
+        jPanel1.add(cajaDetalle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 280, 20));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 320, 20));
 
         botonLlamar.setBackground(new java.awt.Color(255, 255, 255));
         botonLlamar.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         botonLlamar.setForeground(new java.awt.Color(3, 111, 158));
-        botonLlamar.setText("CONTESTAR");
+        botonLlamar.setText("REGISTRAR");
         botonLlamar.setBorder(null);
         botonLlamar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -85,7 +104,7 @@ public class vista_llamada extends javax.swing.JFrame {
                 botonLlamarActionPerformed(evt);
             }
         });
-        jPanel1.add(botonLlamar, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 80, 20));
+        jPanel1.add(botonLlamar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 80, 20));
         botonLlamar.getAccessibleContext().setAccessibleName("");
 
         anuncio1.setBackground(new java.awt.Color(3, 111, 158));
@@ -93,18 +112,18 @@ public class vista_llamada extends javax.swing.JFrame {
         anuncio1.setForeground(new java.awt.Color(255, 255, 255));
         anuncio1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         anuncio1.setFocusable(false);
-        jPanel1.add(anuncio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 400, 30));
-        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 90, 120, 10));
+        jPanel1.add(anuncio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 320, 30));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, 120, 10));
 
         fondo.setBackground(new java.awt.Color(102, 51, 0));
         fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo azul.png"))); // NOI18N
-        jPanel1.add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 190));
+        jPanel1.add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 320, 190));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,10 +141,9 @@ public class vista_llamada extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_botonLlamarMouseClicked
 
-    private void cajaNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cajaNumeroActionPerformed
+    private void cajaDominioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cajaDominioActionPerformed
         // TODO add your handling code here:
-        
-    }//GEN-LAST:event_cajaNumeroActionPerformed
+    }//GEN-LAST:event_cajaDominioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -144,20 +162,21 @@ public class vista_llamada extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(vista_llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(vista_dominio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(vista_llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(vista_dominio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(vista_llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(vista_dominio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(vista_llamada.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(vista_dominio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new vista_llamada().setVisible(true);
+                new vista_dominio().setVisible(true);
             }
         });
 
@@ -166,9 +185,12 @@ public class vista_llamada extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JLabel anuncio1;
     public static javax.swing.JButton botonLlamar;
-    public static javax.swing.JTextField cajaNumero;
+    public static javax.swing.JLabel cajaDetalle;
+    public static javax.swing.JTextField cajaDominio;
     private javax.swing.JLabel fondo;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;

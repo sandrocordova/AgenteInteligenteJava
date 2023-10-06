@@ -18,12 +18,14 @@ import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import multimedias.Escuchar;
 import multimedias.Lee;
 import ventanas.vista_opciones;
 import ventanas.vista_persona;
@@ -34,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Sandro Córdova
  */
-public class AgenteInteligente extends Agent {
+public class AgenteInteligenteVoz extends Agent {
 
     private Paciente paciente;
     private Diagnostico diagnostico = new Diagnostico();
@@ -51,7 +53,7 @@ public class AgenteInteligente extends Agent {
         //Se da una tarea inicial al agente inteligente
         addBehaviour(new OneShotBehaviour(this) {
             public void action() {
-                //Llama al método DatosPaciente
+                //Llama al método DatosPaciente como tarea inicial
                 datosPaciente(String.valueOf(args[0]));
             }
         });
@@ -59,7 +61,6 @@ public class AgenteInteligente extends Agent {
         //Tarea que el agente inteligente desarrollará de manera repetitiva
         addBehaviour(new CyclicBehaviour(this) {
             public void action() {
-
                 if (paciente.getNombre() == null) {
 //                    System.out.println("vacio");
                 }
@@ -72,35 +73,59 @@ public class AgenteInteligente extends Agent {
         //Llamamos a la vista para el ingreso de los datos
         vista_sintomas vista_sintomas = new vista_sintomas();
         vista_sintomas.setVisible(true);
-
-        Lee lee = new Lee();
-        lee.leer("Por favor... ingrese los síntomas que posee ");
-
         ActionListener al = new ActionListener() {
             //Se activa al hacer click en el botón llamar
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Almacena el número de la llamada que ingresa
                 sintomas = vista_sintomas.cajaSintomas.getText();
-                if (sintomas.length() > 0) {
-                    vista_sintomas.setVisible(false);
-                    //Sección de Código para ubicar las pestañas
-                    if (contAgentes == 2) {
-                        vista_sintomas.setLocation(600, 270);
-                    } else if (contAgentes == 3) {
-                        vista_sintomas.setLocation(600, 540);
-                    } else {
-                        vista_sintomas.setLocation(600, 10);
-                    }
-                    //Termina sección
-                    //Llamamos al método para clasificar los síntomas
-                    clasificarSintomas();
+                vista_sintomas.setVisible(false);
+                //Sección de Código para ubicar las pestañas
+                if (contAgentes == 2) {
+                    vista_sintomas.setLocation(600, 270);
+                } else if (contAgentes == 3) {
+                    vista_sintomas.setLocation(600, 540);
                 } else {
-                    lee.leer("Información no encontrada ..... por favor intente de nuevo");
+                    vista_sintomas.setLocation(600, 10);
                 }
+                //Termina sección
+                //Llamamos al método para clasificar los síntomas
+                clasificarSintomas();
             }
         };
         vista_sintomas.botonEnviar.addActionListener(al);
+
+        // Inicia módulo de voz
+        //Se abre el lector para informar al usuario
+        Lee lee = new Lee();
+
+        // 2 SEGUNDOS PARA ESCUCHAR lo que dice el usuario
+        Escuchar escuchar = new Escuchar();
+        String seleccionUsuario = "";
+
+        Boolean bool = true;
+        while (seleccionUsuario.length() <= 3) {
+            if (bool) {
+                //Solicitamos el ingreso de cédula
+                lee.leer("Por favor... utilice su voz para ingresar los síntomas que posee "
+                        + ".... Por ejemplo: Gripe ... tos ... fiebre alta .... presión alta");
+                bool = false;
+            }
+            // 2 SEGUNDOS PARA ESCUCHAR lo que dice el usuario
+            escuchar.escucharPython();
+            //Leemos respuesta del usuario
+            seleccionUsuario = escuchar.leerTxt("sintomas", 6);
+            if (seleccionUsuario != null && seleccionUsuario.length() >= 3) {
+                //Enviamos los síntomas del usuario y enviamos a clasificar 
+                sintomas = seleccionUsuario;
+                vista_sintomas.cajaSintomas.setText(String.valueOf(seleccionUsuario));
+                vista_sintomas.setVisible(false);
+                clasificarSintomas();
+                break;
+            }
+            lee.leer("Información no encontrada ..... por favor intente de nuevo");
+        }
+        // Fin modilo de voz
 
     }
 
@@ -130,6 +155,7 @@ public class AgenteInteligente extends Agent {
             sintoma = sintomasReferencia.get(i);
             //Sintomas contiene el string con los sintomas del paciente en donde se buscan los sintomas de referencia
             //Estandarizamos los síntomas de referencia y los del paciente en minúsculas
+            sintomas = quitaDiacriticos(sintomas);
             if (sintomas.toLowerCase().contains(sintoma.getNombre().toLowerCase())) {
                 //registra los sintomas del paciente a la base de datos
                 Conexion conexion2 = new Conexion();
@@ -153,7 +179,6 @@ public class AgenteInteligente extends Agent {
         //Generamos String de sintomas con formato CSV para presentar en consola y por voz
         String cadenaSintomas = "";
         for (int i = 0; i < sintomasPaciente.size(); i++) {
-            System.out.println("Sintomas encontrados: " + sintomasPaciente.get(i).getNombre());
             cadenaSintomas = cadenaSintomas + sintomasPaciente.get(i).getNombre();
             cadenaSintomas = cadenaSintomas + ",";
         }
@@ -167,9 +192,6 @@ public class AgenteInteligente extends Agent {
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             System.out.println("PACIENTE PRIORIDAD TRES -- Grado máximo");
-            Lee lee = new Lee();
-            lee.leer("Paciente clasificado como prioridad tres .... grado máximo ...");
-
             pacientePrioridadTres();
         } else if (contadorPrioridadTres == 2) {
             diagnostico.setNumCedula(paciente.getCedula());
@@ -178,9 +200,6 @@ public class AgenteInteligente extends Agent {
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             System.out.println("PACIENTE PRIORIDAD DOS -- Grado medio");
-            Lee lee = new Lee();
-            lee.leer("Paciente clasificado como prioridad dos .... grado medio ..."
-                    + "Se recomienda hacer uso de la cita médica ... ");
             pacientePrioridadDos();
         } else if (contadorPrioridadDos >= 2) {
             diagnostico.setNumCedula(paciente.getCedula());
@@ -189,9 +208,6 @@ public class AgenteInteligente extends Agent {
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             System.out.println("PACIENTE PRIORIDAD DOS -- Grado medio");
-            Lee lee = new Lee();
-            lee.leer("Paciente clasificado como prioridad dos .... grado medio ..."
-                    + "Se recomienda hacer uso de la cita médica ... ");
             pacientePrioridadDos();
         } else {
             diagnostico.setNumCedula(paciente.getCedula());
@@ -200,18 +216,35 @@ public class AgenteInteligente extends Agent {
             conexionDiagnostico.insertarDiagnosticoPaciente(diagnostico.getNumCedula(),
                     diagnostico.getDiagnostico(), diagnostico.getDetalles());
             System.out.println("PACIENTE PRIORIDAD UNO -- Grado leve");
-            Lee lee = new Lee();
-            lee.leer("Paciente clasificado como prioridad Uno .... grado leve ... ");
             pacientePrioridadUno();
         }
 
     }
 
+    public static String quitaDiacriticos(String cadena) {
+        String limpio = null;
+        if (cadena != null) {
+            String valor = cadena;
+            valor = valor.toUpperCase();
+            // Normalizar texto para eliminar acentos, dieresis, cedillas y tildes
+            limpio = Normalizer.normalize(valor, Normalizer.Form.NFD);
+            // Quitar caracteres no ASCII excepto la enie, interrogacion que abre, exclamacion que abre, grados, U con dieresis.
+            limpio = limpio.replaceAll("[^\\p{ASCII}(N\u0303)(n\u0303)(\u00A1)(\u00BF)(\u00B0)(U\u0308)(u\u0308)]", "");
+            // Regresar a la forma compuesta, para poder comparar la enie con la tabla de valores
+            limpio = Normalizer.normalize(limpio, Normalizer.Form.NFC);
+        }
+        return limpio;
+    }
+
+    //Solicita la información personal del paciente
     private void datosPaciente(String numero_telefono) {
         //Conexion con la base de datos
         Conexion conexion = new Conexion();
+
+        //Se crea la interfaz gráfica del usuario
         vista_persona vista_persona = new vista_persona();
         vista_persona.setVisible(true);
+
         //Sección de Código para ubicar las pestañas
         if (contAgentes == 2) {
             vista_persona.setLocation(600, 270);
@@ -221,9 +254,8 @@ public class AgenteInteligente extends Agent {
             vista_persona.setLocation(600, 10);
         }
         //Termina sección
-        Lee lee = new Lee();
-        lee.leer("Por favor ingrese sus datos personales..... ");
 
+        //Inicia Interfaz gráfica
         paciente = new Paciente();
         ActionListener al = new ActionListener() {
             //Se activa al hacer click en el botón llamar
@@ -246,18 +278,225 @@ public class AgenteInteligente extends Agent {
             }
         };
         vista_persona.botonEnviar.addActionListener(al);
+
+        //Fin interfáz gráfica
+        //Creamos el objeto paciente
+        paciente = new Paciente();
+        paciente.setNum_telefono(numero_telefono);
+
+        // Inicia módulo de voz
+        //Se abre el lector para informar al usuario
+        Lee lee = new Lee();
+        Escuchar escuchar = new Escuchar();
+
+        String datoRequerido = "cedula";
+        String seleccionUsuario = "";
+        Boolean bool = true;
+        while (datoRequerido != null) {
+            switch (datoRequerido) {
+                case "cedula":
+                    //------###########
+                    //Solo realizar una vez
+                    if (bool) {
+                        //Solicitamos el ingreso de cédula
+                        lee.leer("Por favor utilice su voz para ingresar su número de cédula ó pasaporte ..... ");
+                        bool = false;
+                    } else {
+                        lee.leer("Información no encontrada, vuelva a intentarlo");
+                    }
+                    //------###########
+                    // 10 SEGUNDOS PARA ESCUCHAR lo que dice el usuario
+                    escuchar.escucharPython();
+                    //Solicitamos el ingreso de la cedula
+                    seleccionUsuario = escuchar.leerTxt("numeros", 5);
+                    //Buscar cedula en la base de datos si existe, hasta aquí se llega 
+                    ArrayList<Paciente> listaPacientes = new ArrayList<Paciente>();
+                    listaPacientes = conexion.buscarPacientes();
+                    if (seleccionUsuario.length() >= 3) {
+                        for (int i = 0; i < listaPacientes.size(); i++) {
+//                        System.out.println(listaPacientes.get(i).getCedula() + " cedulas registradas");
+                            try {
+
+                                if (String.valueOf(listaPacientes.get(i).getCedula()).contains(seleccionUsuario)) {
+                                    System.out.println("COINCIDE CON LA BDD");
+                                    //Guardamos los valores ingresados por el usuario
+                                    paciente.setCedula(seleccionUsuario);
+                                    vista_persona.cajaCedula.setText(seleccionUsuario); // se puede eliminar
+
+                                    paciente.setNombre(listaPacientes.get(i).getNombre());
+                                    vista_persona.cajaNombre.setText(listaPacientes.get(i).getNombre()); // se puede eliminar
+
+                                    paciente.setCorreo(listaPacientes.get(i).getCorreo());
+                                    vista_persona.cajaCorreo.setText(listaPacientes.get(i).getCorreo()); // se puede eliminar
+
+                                    paciente.setEdad(listaPacientes.get(i).getEdad());
+                                    vista_persona.cajaEdad.setText(String.valueOf(listaPacientes.get(i).getEdad())); // se puede eliminar
+
+                                    //Se registra el paciente en la base de datos y llamamos al siguiente método
+                                    conexion.insertarPaciente(paciente.getNum_telefono(), paciente.getNombre(), paciente.getCedula(),
+                                            paciente.getCorreo(), paciente.getEdad());
+
+                                    //Se termina la recolección de los datos del paciente
+                                    datoRequerido = null;
+                                    seleccionUsuario = "";
+                                    //Limpiamos respuestas
+                                    Escuchar escucharLimpiar = new Escuchar();
+                                    escucharLimpiar.limpiarArchivo();
+                                    lee.leer("Datos encontrados en la base de datos .... ");
+                                    sintomasPaciente();
+                                    break;
+                                }
+
+                            } catch (Exception e) {
+                                System.out.println("------ERROR al convertir STR--------------");
+                            }
+                        }
+                    }
+                    //Tomamos la cedula del usuario
+                    if (seleccionUsuario.length() >= 3) {
+                        try {
+                            int aux = Integer.parseInt(seleccionUsuario);
+                        } catch (Exception e) {
+                            lee.leer("Por favor ingrese un valor numérico.... ");
+                            break;
+                        }
+                        //Guardamos los valores ingresados por el usuario
+                        paciente.setCedula(seleccionUsuario);
+                        vista_persona.cajaCedula.setText(seleccionUsuario); // se puede eliminar
+
+                        //Solicitamos el ingreso de nombre
+                        datoRequerido = "nombre";
+                        //Limpiamos respuestas
+                        Escuchar escucharLimpiar = new Escuchar();
+                        escucharLimpiar.limpiarArchivo();
+                        lee.leer("Paciente no registrado en la base de datos .... ");
+                        bool = true;
+                        break;
+                    }
+                    break;
+
+                case "nombre":
+                    //Solicitamos el ingreso de nombre
+                    lee.leer("Por favor... utilice su voz para ingresar su nombre");
+                    // 2 SEGUNDOS PARA ESCUCHAR lo que dice el usuario
+                    escuchar.escucharPython();
+                    //Lee los datos del usuario
+                    seleccionUsuario = escuchar.leerTxt("nombre", 3);
+                    //Solicitamos el nombre del usuario
+
+                    if (seleccionUsuario.length() >= 3) {
+                        //Guardamos los valores ingresados por el usuario
+                        paciente.setNombre(seleccionUsuario);
+                        vista_persona.cajaNombre.setText(seleccionUsuario); // se puede eliminar
+                        //Solicitamos el ingreso de cédula
+                        datoRequerido = "correo";
+                        //Limpiamos respuestas
+                        Escuchar escucharLimpiar = new Escuchar();
+                        escucharLimpiar.limpiarArchivo();
+                        lee.leer("Datos encontrados .... " + seleccionUsuario);
+                        bool = true;
+                        break;
+                    }
+                    lee.leer("Información no encontrada");
+                    break;
+
+                case "correo":
+                    if (bool) {
+                        lee.leer("Por favor utilice su voz para ingresar su correo electrónico");
+                        bool = false;
+                    }
+                    escuchar.escucharPython();
+                    seleccionUsuario = escuchar.leerTxt("correo", 5);
+                    if (!seleccionUsuario.contains("@")) {
+                        lee.leer("Correo electrónico no válido, por favor intente nuevamente");
+                        break;
+                    }
+                    if (seleccionUsuario.length() >= 2) {
+                        paciente.setCorreo(seleccionUsuario);
+                        vista_persona.cajaCorreo.setText(seleccionUsuario); // se puede eliminar
+                        //Solicitamos el ingreso de la edad
+                        datoRequerido = "edad";
+                        //Limpiamos respuestas
+                        Escuchar escucharLimpiar = new Escuchar();
+                        escucharLimpiar.limpiarArchivo();
+                        lee.leer("Datos encontrados .... " + seleccionUsuario);
+                        bool = true;
+                        break;
+                    }
+                    lee.leer("Información no encontrada");
+                    break;
+
+                case "edad":
+                    if (bool) {
+                        //Solicitamos el ingreso de cédula
+                        lee.leer("Por favor utilice su voz para ingresar su edad");
+                        bool = false;
+                    }
+                    escuchar.escucharPython();
+                    int edad = 0;
+                    try {
+                        edad = Integer.parseInt(escuchar.leerTxt("numeros", 3));
+                    } catch (Exception e) {
+                        lee.leer("Valor erróneo .... Por favor ingrese un valor numérico");
+                        break;
+                    }
+                    //Tomamos la cedula del usuario
+                    if (edad >= 18) {
+                        //Guardamos los valores ingresados por el usuario
+                        paciente.setEdad(edad);
+                        vista_persona.cajaEdad.setText(String.valueOf(edad)); // se puede eliminar
+
+                        //Se registra el paciente en la base de datos y llamamos al siguiente método
+                        conexion.insertarPaciente(paciente.getNum_telefono(), paciente.getNombre(), paciente.getCedula(),
+                                paciente.getCorreo(), paciente.getEdad());
+
+                        //Se termina la recolección de los datos del paciente
+                        datoRequerido = null;
+                        //Limpiamos respuestas
+                        Escuchar escucharLimpiar = new Escuchar();
+                        escucharLimpiar.limpiarArchivo();
+                        lee.leer("Datos encontrados .... " + edad);
+                        vista_persona.setVisible(false);
+                        sintomasPaciente();
+                        break;
+                    } else if (edad < 18) {
+                        lee.leer("La edad ingresada no es válida, debe tener almenos 18 años");
+                        break;
+                    }
+                    lee.leer("Información no encontrada");
+                    break;
+
+            }
+        }
+        // Fin modilo de voz
     }
 
     private void pacientePrioridadUno() {
+        // Inicia módulo de voz
+        //Se abre el lector para informar al usuario
+        Lee lee = new Lee();
+        lee.leer("Basado en sus síntomas, usted ha sido clasificado como paciente de prioridad baja");
+        //Termina módulo de voz
         medidasBioseguridad();
     }
 
     private void pacientePrioridadDos() {
+        // Inicia módulo de voz
+        //Se abre el lector para informar al usuario
+        Lee lee = new Lee();
+        lee.leer("Basado en sus síntomas, usted ha sido clasificado como paciente de prioridad media"
+                + "Se recomienda hacer uso de la cita médica ... ");
+        //Termina módulo de voz
         generarCita();
         medidasBioseguridad();
     }
 
     private void pacientePrioridadTres() {
+        // Inicia módulo de voz
+        //Se abre el lector para informar al usuario
+        Lee lee = new Lee();
+        lee.leer("Basado en sus síntomas, usted ha sido clasificado como paciente de prioridad alta");
+        //Termina módulo de voz
         generarCita();
         recetarMedicina();
         medidasBioseguridad();
@@ -277,7 +516,7 @@ public class AgenteInteligente extends Agent {
         //Se establece un formato a la fecha de la cita
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy/h:mm");
         Date someDate = new Date();
-        String fecha = sdf.format(new Date(someDate.getTime() + TimeUnit.DAYS.toMillis( 1 )));
+        String fecha = sdf.format(new Date(someDate.getTime() + TimeUnit.DAYS.toMillis(1)));
         cita.setFecha(fecha);
         //Se almacena en la base de datos
         Conexion conexionCita = new Conexion();
@@ -312,17 +551,23 @@ public class AgenteInteligente extends Agent {
             vista_sintomas.setLocation(600, 10);
         }
         //Termina sección
+
+        //Inicia interfaz de voz
         //Se lee la información de la cita médica al usuario
+        String citaTextovoz = "Se ha generado una cita médica a Nombre de: " + cita.getNombres()
+                + " .... con el Correo electrónico " + cita.getCorreo() + ".... Fecha de la cita ... " + cita.getFecha();
+
         Lee lee = new Lee();
-        lee.leer(citaTexto);
-        System.out.println("GENERAR CITA MÉDICA");
+        lee.leer(citaTextovoz);
+        //Fin interfaz voz
+        System.out.println("CITA MÉDICA GENERADA");
     }
 
     //Metodo para recetar medicina al paciente
     private void recetarMedicina() {
         //Presentar el medicamento al usuario
-        String medicamentos = "En caso de emergencia ...\n"
-                + "se recomienda la administración de: " + "\nPARACETAMOL";
+        String medicamentos = "En caso de emergencia\n"
+                + "se recomienda la administración de: " + "\n---PARACETAMOL---";
         vista_sintomas vista_sintomas = new vista_sintomas();
         vista_sintomas.anuncio.setText("Medicina Recomendada");
         vista_sintomas.cajaSintomas.setText(medicamentos);

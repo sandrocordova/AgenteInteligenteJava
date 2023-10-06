@@ -6,10 +6,14 @@
 package baseDeDatos;
 
 import clases.Cita;
+import clases.Dominios;
 import clases.Sintoma;
 import clases.Extension;
 import clases.MedidaBioseguridad;
+import clases.Numero;
 import clases.Paciente;
+import clases.PosibleDiagnostico;
+import clases.Simbolo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -33,11 +37,15 @@ public class Conexion {
     DBCollection coleccionCita;
     DBCollection coleccionMedidaBioseguridad;
     DBCollection coleccionSintomaPaciente;
+    DBCollection coleccionDominio;
+    DBCollection coleccionNumeros;
+    DBCollection coleccionSimbolos;
+    DBCollection coleccionPosibleDiagnostico;
     BasicDBObject documento = new BasicDBObject();
 
     public Conexion() {
         try {
-            Mongo mongo = new Mongo("localhost", 27017);
+            Mongo mongo = new Mongo("127.0.0.1", 27017);
             BaseDatos = mongo.getDB("CallCenterBDD");
             coleccionLlamada = BaseDatos.getCollection("llamada");
             coleccionPaciente = BaseDatos.getCollection("paciente");
@@ -47,6 +55,10 @@ public class Conexion {
             coleccionSintoma = BaseDatos.getCollection("sintomas");
             coleccionDiagnostico = BaseDatos.getCollection("diagnostico");
             coleccionSintomaPaciente = BaseDatos.getCollection("sintoma_paciente");
+            coleccionPosibleDiagnostico = BaseDatos.getCollection("posible_diagnostico");
+            coleccionDominio = BaseDatos.getCollection("dominio");
+            coleccionNumeros = BaseDatos.getCollection("numeros");
+            coleccionSimbolos = BaseDatos.getCollection("simbolos");
             System.out.println("Base de datos conectada....");
         } catch (Exception e) {
             System.out.println("ERROR AL CARGAR LA BASE DE DATOS");
@@ -60,7 +72,15 @@ public class Conexion {
         coleccionLlamada.insert(documento);
         return true;
     }
-    
+
+    //Crea un registro de la llamada que ingresa al call center
+    public boolean insertarDominio(String dominioCompleto, String identificador) {
+        documento.put("dominio", dominioCompleto);
+        documento.put("identificador", identificador);
+        coleccionDominio.insert(documento);
+        return true;
+    }
+
     //Crea un registro con las medidas de bioseguridad del call center
     public boolean insertarMedidaBioseguridad(String nombre, String detalle) {
         documento.put("nombre", nombre);
@@ -77,6 +97,41 @@ public class Conexion {
         return true;
     }
 
+    //Inserta los simbolos de referencia para poder comparar con valores ingresados
+    public boolean insertarSimbolo(String nombre, String simbolo, String condicion) {
+        if (condicion == "Numero") {
+            documento.put("nombre", nombre);
+            documento.put("numero", simbolo);
+            coleccionNumeros.insert(documento);
+        } else {
+            documento.put("nombre", nombre);
+            documento.put("simbolo", simbolo);
+            coleccionSimbolos.insert(documento);
+        }
+        return true;
+    }
+    
+    //Inserta los sìntomas de referencia para poder comparar con los del paciente
+    public boolean insertarPosibleDiagnostico(String enfermedad, String sintoma) {
+        documento.put("enfermedad", enfermedad);
+        documento.put("sintoma", sintoma);
+        coleccionPosibleDiagnostico.insert(documento);
+        return true;
+    }
+ 
+    //Obtener los sìntomas de referencia de la base de datos
+    public ArrayList<PosibleDiagnostico> buscarPosibleDiagnostico() {
+        DBCursor cursor = coleccionPosibleDiagnostico.find();
+        ArrayList<PosibleDiagnostico> listaPosibleDiagnostico = new ArrayList<PosibleDiagnostico>();
+        while (cursor.hasNext()) {
+            PosibleDiagnostico posibleDiagnostico = new PosibleDiagnostico();
+            DBObject object = cursor.next();
+            posibleDiagnostico.setEnfermedad(String.valueOf(object.get("enfermedad")));
+            posibleDiagnostico.setSintoma(String.valueOf(object.get("sintoma")));
+            listaPosibleDiagnostico.add(posibleDiagnostico);
+        }
+        return listaPosibleDiagnostico;
+    }
     //Obtener los sìntomas de referencia de la base de datos
     public ArrayList<MedidaBioseguridad> buscarMedidasBioseguridad() {
         DBCursor cursor = coleccionMedidaBioseguridad.find();
@@ -90,7 +145,47 @@ public class Conexion {
         }
         return listaMedidas;
     }
-    
+
+    //Obtener los dominios registrados en la base de datos
+    public ArrayList<Dominios> buscarDominios() {
+        DBCursor cursor = coleccionDominio.find();
+        ArrayList<Dominios> listaDominios = new ArrayList<Dominios>();
+        while (cursor.hasNext()) {
+            Dominios dominio = new Dominios();
+            DBObject object = cursor.next();
+            dominio.setDominioCompleto(String.valueOf(object.get("dominio")));
+            dominio.setIdentificador(String.valueOf(object.get("identificador")));
+            listaDominios.add(dominio);
+        }
+        return listaDominios;
+    }
+    //Obtener los Simbolos registrados en la base de datos
+    public ArrayList<Simbolo> buscarSimbolos() {
+        DBCursor cursor = coleccionSimbolos.find();
+        ArrayList<Simbolo> listaSimbolos = new ArrayList<Simbolo>();
+        while (cursor.hasNext()) {
+            Simbolo simbolo = new Simbolo();
+            DBObject object = cursor.next();
+            simbolo.setNombre(String.valueOf(object.get("nombre")));
+            simbolo.setSimbolo(String.valueOf(object.get("simbolo")));
+            listaSimbolos.add(simbolo);
+        }
+        return listaSimbolos;
+    }
+    //Obtener los Numeros registrados en la base de datos
+    public ArrayList<Numero> buscarNumeros() {
+        DBCursor cursor = coleccionNumeros.find();
+        ArrayList<Numero> listaNumeros = new ArrayList<Numero>();
+        while (cursor.hasNext()) {
+            Numero numero = new Numero();
+            DBObject object = cursor.next();
+            numero.setNombre(String.valueOf(object.get("nombre")));
+            numero.setNumero(String.valueOf(object.get("numero")));
+            listaNumeros.add(numero);
+        }
+        return listaNumeros;
+    }
+
     //Obtener los sìntomas de referencia de la base de datos
     public ArrayList<Sintoma> buscarSintomas() {
         DBCursor cursor = coleccionSintoma.find();
@@ -105,7 +200,7 @@ public class Conexion {
         }
         return sintomasReferencia;
     }
-    
+
     //Inserta los sintomas que posee un paciente
     public boolean insertarSintomaPaciente(String cedula, String sintoma, int prioridad) {
         documento.put("paciente_id", cedula);
@@ -123,7 +218,7 @@ public class Conexion {
         coleccionDiagnostico.insert(documento);
         return true;
     }
-    
+
     //Inserta las extensiones disponibles dentro del centro de salud
     public boolean insertarExtension(String numero, String extension, String detalle, String estado) {
         documento.put("numero", numero);
@@ -149,9 +244,9 @@ public class Conexion {
         }
         return listaExtensiones;
     }
-    
+
     //Inserta la cita generada para el paciente
-    public boolean insertarCita(String nombres, int  edad, String cedula, 
+    public boolean insertarCita(String nombres, int edad, String cedula,
             String correo, String sintomas, String diagnostico, String fecha) {
         documento.put("nombres", nombres);
         documento.put("edad", edad);
@@ -182,21 +277,19 @@ public class Conexion {
         }
         return listaCitas;
     }
-    
+
     //Se obtiene la cita que coincida con el número de cédula ingresado
     public Cita buscarCita(ArrayList<Cita> listaCitas, String cedula) {
         for (int i = 0; i < listaCitas.size(); i++) {
             Cita cita = new Cita();
             cita = listaCitas.get(i);
-            System.out.println(cita.getCedula());
-            if (cita.getCedula().contains(cedula)) {
+            if (cita.getCedula()==cedula) {
                 return cita;
             }
         }
         return null;
     }
-    
-    
+
     public boolean actualizarCita(Cita cita, String fechaNueva) {
         documento.put("cedula", cita.getCedula());
 
@@ -210,17 +303,19 @@ public class Conexion {
         documentoNuevo.put("fecha", fechaNueva);
 
         coleccionCita.findAndModify(documento, documentoNuevo);
+        System.out.println("Cita con número de cédula: " + cita.getCedula() 
+                + " ha sido actualizada");
         return true;
     }
-    
+
     //Elimina la cita que coincida con el numero de cedula ingresado
     public boolean eliminarCita(String cedula) {
         documento.put("cedula", cedula);
         coleccionCita.remove(documento);
-        System.out.println("Cita con número de cédula: "+cedula+" ha sido eliminada");
+        System.out.println("Cita con número de cédula: " + cedula + " ha sido eliminada");
         return true;
     }
-    
+
     //Registra el paciente ingresado a la base de datos
     public boolean insertarPaciente(String telefono,
             String nombre, String cedula, String correo, int edad) {
@@ -249,7 +344,7 @@ public class Conexion {
         }
         return listaPacientes;
     }
-    
+
     //Se obtiene el paciente que coincida con el número de cédula ingresado
     public Paciente buscarPaciente(ArrayList<Paciente> listaPacientes, String cedula) {
         for (int i = 0; i < listaPacientes.size(); i++) {
@@ -261,12 +356,12 @@ public class Conexion {
         }
         return null;
     }
-    
+
     //Elimina al paciente con el numero de cedula ingresado
     public boolean eliminarPaciente(String cedula) {
         documento.put("cedula", cedula);
         coleccionPaciente.remove(documento);
-        System.out.println("Paciente con número de cédula: "+cedula+" ha sido eliminado");
+        System.out.println("Paciente con número de cédula: " + cedula + " ha sido eliminado");
         return true;
     }
 
@@ -282,6 +377,7 @@ public class Conexion {
         documentoNuevo.put("edad", pacienteNuevo.getEdad());
 
         coleccionPaciente.findAndModify(documento, documentoNuevo);
+        System.out.println("Paciente con número de cédula: " + pacienteNuevo.getCedula() + " ha sido actualizado");
         return true;
     }
 }

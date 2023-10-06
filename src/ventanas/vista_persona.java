@@ -260,7 +260,7 @@ public class vista_persona extends javax.swing.JFrame {
     private void cajaNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cajaNombreKeyTyped
         // TODO add your handling code here:
         char c = evt.getKeyChar();
-        if ((c < 'a' || c > 'z') && (c < 'A') | c > 'Z')
+        if ((c!=' ')&&(c < 'a' || c > 'z') && (c < 'A') | c > 'Z')
             evt.consume();
     }//GEN-LAST:event_cajaNombreKeyTyped
 

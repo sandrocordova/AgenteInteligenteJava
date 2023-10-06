@@ -8,7 +8,6 @@ package principal;
 import agenteinteligente.Escucha;
 import baseDeDatos.Conexion;
 import clases.Cita;
-import clases.Dominios;
 import clases.Extension;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -36,8 +35,9 @@ import javax.speech.recognition.ResultToken;
 import javax.speech.recognition.RuleGrammar;
 import multimedias.Escuchar;
 import multimedias.Lee;
+import static principal.Main.menuDominio;
+import static principal.Main.menuSimbolos;
 import ventanas.vista_administrador;
-import ventanas.vista_diagnostico;
 import ventanas.vista_dominio;
 import ventanas.vista_gestion;
 import static ventanas.vista_gestion.anuncioCedulaCita;
@@ -57,7 +57,7 @@ import ventanas.vista_simbolos;
  *
  * @author USUARIO
  */
-public class Main {
+public class MainVoz {
 
     static int contAgentes = 0;
     static int contAgentes2 = 0;
@@ -70,7 +70,6 @@ public class Main {
         vista_administrador vista_administrador = new vista_administrador();
         vista_administrador.setVisible(true);
 
-        //Llama al menú de INFORMES
         ActionListener alAdmin = new ActionListener() {
             //Se activa al hacer click en el botón llamar
             @Override
@@ -113,17 +112,6 @@ public class Main {
         };
         //creamos el escuchador
         vista_administrador.botonNumero.addActionListener(alNumeros);
-        
-        //Llama al menú de DIAGNOSTICO
-        ActionListener alDiagnostico = new ActionListener() {
-            //Se activa al hacer click en el botón llamar
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuPosibleDiagnostico();
-            }
-        };
-        //creamos el escuchador
-        vista_administrador.botonEnfermedad.addActionListener(alDiagnostico);
 
         //Bucle para escuchar constantemente las llamadas entrantes
         ActionListener al = new ActionListener() {
@@ -142,7 +130,7 @@ public class Main {
                     llamada.setNum_telefono(numero);
                     //Reiniciamos el ingreso de nuevas llamadas
                     vista_llama.anuncio1.setText("");
-                    vista_llama.cajaNumero.setText("");
+                    vista_llama.cajaNumero.setText("0900002003");
 
                     //Se activa el metodo para llamada entrante
                     hay_llamada(llamada);
@@ -166,69 +154,54 @@ public class Main {
         }
         //termina sección
 
-        //--------------Inicia Interfaz gráfica
-        vista_opciones vista_opciones = new vista_opciones();
-        vista_opciones.setVisible(true);
-        vista_opciones.cajaOpciones.setText("DIGITE UNA OPCIÓN \n"
-                + "1. Transferir llamada \n"
-                + "2. Centro de información COVID-19");
-        
-        //Sección de Código para ubicar las pestañas
-        if (contAgentes2 == 2) {
-            vista_opciones.setLocation(600, 270);
-        } else if (contAgentes2 == 3) {
-            vista_opciones.setLocation(600, 540);
-        } else {
-            vista_opciones.setLocation(600, 10);
-        }
-        //Termina sección
-        
-        Lee lee = new Lee();
-        
-        ActionListener al = new ActionListener() {
-            //Se activa al hacer click en el botón llamar
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Almacena el número de la llamada que ingresa
-                //Abre comunicacion con la base de datos
-
-                int entrada = Integer.parseInt(vista_opciones.cajaOpcion.getText());
-                llamada.setSeleccion(entrada);
-
-                Conexion coneccion = new Conexion();
-                //Tomar decisión acorde a la selección del usuario
-                if (llamada.getSeleccion() == 1) {
-                    //Lo registra en la base de datos
-                    coneccion.insertarLlamada(llamada.getNum_telefono(), llamada.getSeleccion());
-                    transferir_llamada(llamada);
-                    vista_opciones.setVisible(false);
-                } else if (llamada.getSeleccion() == 2) {
-                    //Lo registra en la base de datos
-                    coneccion.insertarLlamada(llamada.getNum_telefono(), llamada.getSeleccion());
-                    //Sección para contar el numero de agentes
-                    if (contAgentes == 4) {
-                        contAgentes = 1;
-                    } else {
-                        contAgentes++;
-                    }
-                    //termina sección
-                    //llamamos a crear agente
-                    crear_agente(llamada);
-                    vista_opciones.setVisible(false);
-                } else {
-                    lee.leer("Valor erróneo .... por favor ingrese una de las opciones dadas");
-                    vista_opciones.anuncio1.setText("Opción no válida");
-                }
-            }
-        };
-        vista_opciones.botonEnviar.addActionListener(al);
-        //Inicia Interfaz de voz
+        //--------------Inicia Interfaz de voz
         String texto = "Bienvenido al Sistema de llamadas teléfonicas";
         texto = texto + " ... Opción 1, Transferir llamada a la recepción ... Opción 2, Centro de información de covid 19";
+        texto = texto + " ... Por favor, Utilice su voz para seleccionar una de las opciones";
+        Lee lee = new Lee();
         lee.leer(texto);
-        //TErmina interfaz voz
-        
-        //--------------Termina Interfaz gráfica
+
+        // 2 SEGUNDOS PARA ESCUCHAR lo que dice el usuario
+        Escuchar escuchar = new Escuchar();
+        //Bucle para esperar una selección válida del cliente
+        while (true) {
+            //Activamos el escuchador
+            escuchar.escucharPython();
+            //Tomamos la respuesta del usuario y lo convertimos a int
+            int seleccionUsuario = 0;
+            try {
+                int respuesta = Integer.parseInt(escuchar.leerTxt("seleccion", 3));
+                seleccionUsuario = respuesta;
+            } catch (Exception e) {
+                lee.leer("Valor erróneo .... por favor ingrese una de las opciones dadas");
+            }
+            if (seleccionUsuario == 1) {
+                llamada.setSeleccion(seleccionUsuario);
+                lee.leer("Opción seleccionada: " + seleccionUsuario);
+                transferir_llamada(llamada);
+                break;
+            } else if (seleccionUsuario == 2) {
+                llamada.setSeleccion(seleccionUsuario);
+                Conexion coneccion = new Conexion();
+                //Lo registra en la base de datos
+                coneccion.insertarLlamada(llamada.getNum_telefono(), llamada.getSeleccion());
+                //Sección para contar el numero de agentes
+                if (contAgentes == 4) {
+                    contAgentes = 1;
+                } else {
+                    contAgentes++;
+                }
+
+                lee.leer("Opción seleccionada: " + seleccionUsuario);
+                //limpiamos la respuesta anterior
+                Escuchar escucha = new Escuchar();
+                escucha.limpiarArchivo();
+                //Se crea el agente
+                crear_agente(llamada);
+                break;
+            }
+            System.out.println("OPCION NO VALIDA: " + seleccionUsuario);
+        }
     }
 
     public static void crear_agente(Llamada llamada) {
@@ -247,28 +220,12 @@ public class Main {
         try {
             //inicia el agente inteligente y enviamos argumentos
             ac = cc.createNewAgent("Agente" + llamada.getNum_telefono(),
-                    "agenteinteligente.AgenteInteligente", arguments);
+                    "agenteinteligente.AgenteInteligenteVoz", arguments);
             ac.start();
 
         } catch (Exception e) {
-            System.out.println("ERROR al CREAR el Agente inteligente");
+            System.out.println("ERRO al CREAR el Agente inteligente");
         }
-    }
-
-    public static boolean transferir_llamada(Llamada llamada) {
-        Conexion conexion = new Conexion();
-        ArrayList<Extension> listaExtensiones = new ArrayList<Extension>();
-        listaExtensiones = conexion.buscarExtension();
-        for (int i = 0; i < listaExtensiones.size(); i++) {
-            Extension extension = new Extension();
-            extension = listaExtensiones.get(i);
-            if (extension.getEstado().contains("True")) {
-                System.out.println("Su llamada ha sido transferida al:" + extension.getDetalle()
-                        + " extensión: " + extension.getExtension());
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void menuDominio() {
@@ -285,7 +242,7 @@ public class Main {
                     String texto = vista_dominio.cajaDominio.getText();
                     int posicionPunto = texto.indexOf('.');
                     String sHastaPrimerPunto = texto.substring(0, posicionPunto);
-                    conexion.insertarDominio(vista_dominio.cajaDominio.getText().toLowerCase(), sHastaPrimerPunto.toLowerCase());
+                    conexion.insertarDominio(vista_dominio.cajaDominio.getText().toLowerCase(), sHastaPrimerPunto);
                     vista_dominio.cajaDetalle.setText("Dominio registrado: " + vista_dominio.cajaDominio.getText() + " Indentificador: " + sHastaPrimerPunto);
                     vista_dominio.cajaDominio.setText("");
                 } else {
@@ -309,7 +266,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 if (vista_simbolos.cajaNombre.getText().length() >= 1 && vista_simbolos.cajaSimbolo.getText().length() >= 1) {
                     Conexion conexion = new Conexion();
-                    conexion.insertarSimbolo(vista_simbolos.cajaNombre.getText().toLowerCase(), vista_simbolos.cajaSimbolo.getText(), entrada);
+                    conexion.insertarSimbolo(vista_simbolos.cajaNombre.getText().toLowerCase(), vista_simbolos.cajaSimbolo.getText().toLowerCase(), entrada);
                     vista_simbolos.cajaDetalle.setText(entrada + " registrado con éxito: " + vista_simbolos.cajaSimbolo.getText());
                     vista_simbolos.cajaSimbolo.setText("");
                     vista_simbolos.cajaNombre.setText("");
@@ -321,28 +278,31 @@ public class Main {
         };
         vista_simbolos.botonRegistrar.addActionListener(alCita);
     }
-    
-    public static void menuPosibleDiagnostico() {
-        vista_diagnostico vista_diagnostico = new vista_diagnostico();
-        vista_diagnostico.setVisible(true);
-        //Escuchador para listar las citas de la base de datos
-        ActionListener alCita = new ActionListener() {
-            //Se activa al hacer click en el botón llamar
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (vista_diagnostico.cajaEnfermedad.getText().length() >= 5 && vista_diagnostico.cajaSintoma.getText().length() >= 3) {
-                    Conexion conexion = new Conexion();
-                    conexion.insertarPosibleDiagnostico(vista_diagnostico.cajaEnfermedad.getText().toLowerCase(), vista_diagnostico.cajaSintoma.getText());
-                    vista_diagnostico.cajaDetalle.setText(vista_diagnostico.cajaSintoma.getText()+" Registrado con éxito para " + vista_diagnostico.cajaEnfermedad.getText());
-                    vista_diagnostico.cajaSintoma.setText("");
-                    vista_diagnostico.cajaEnfermedad.setText("");
-                } else {
-                    vista_diagnostico.cajaDetalle.setText("Complete todos los campos");
-                }
 
+    public static boolean transferir_llamada(Llamada llamada) {
+        Conexion conexion = new Conexion();
+        ArrayList<Extension> listaExtensiones = new ArrayList<Extension>();
+        listaExtensiones = conexion.buscarExtension();
+        for (int i = 0; i < listaExtensiones.size(); i++) {
+            Extension extension = new Extension();
+            extension = listaExtensiones.get(i);
+            if (extension.getEstado().contains("True")) {
+                //Lo registra en la base de datos
+                conexion.insertarLlamada(llamada.getNum_telefono(), llamada.getSeleccion());
+
+                //Imprime en consola
+                System.out.println("Su llamada ha sido transferida a la:" + extension.getDetalle()
+                        + " extensión: " + extension.getExtension());
+
+                //Evía al módulo de voz
+                String textoTransferirLlamada = "Su llamada ha sido transferida a la:" + extension.getDetalle()
+                        + " extensión: " + extension.getExtension() + " ... por favor espere mientras es atendido";
+                Lee lee = new Lee();
+                lee.leer(textoTransferirLlamada);
+                return true;
             }
-        };
-        vista_diagnostico.botonRegistrar.addActionListener(alCita);
+        }
+        return false;
     }
 
     public static void menuAdministrador() {
@@ -396,16 +356,16 @@ public class Main {
                 Cita cita = new Cita();
                 cita = conexion.buscarCita(listaCitas,
                         vista_gestion.cajaCedulaCita.getText());
-                if (cita!=null) {
+                if (cita != null) {
                     conexion.eliminarCita(cita.getCedula());
                     vista_gestion.anuncio1.setText("Cita Eliminada");
                 } else {
                     vista_gestion.anuncio1.setText("Cita no encontrada");
                 }
-                
             }
         };
         vista_gestion.btnEliminarCita.addActionListener(alEliminarCita);
+
         //Escuchador para actualizar una cita de la base de datos
         ActionListener alActualizarCita = new ActionListener() {
             @Override
